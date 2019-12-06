@@ -1,0 +1,14 @@
+logging:
+  level: DEBUG
+DB:
+  host: mysql.host
+  password: password
+  port: 3306
+  schema: gambling_simulation
+  user: user
+crawler:
+  dateFormat: '%Y%m%d'
+  urlPattern: https://www.playsport.cc/predictgame.php?action=scale&allianceid={game_type}&gametime={game_date}&sid={group_type}
+data_updater:
+  backup_period: 7
+  update_period: 24
