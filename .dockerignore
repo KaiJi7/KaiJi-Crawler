@@ -4,7 +4,7 @@
 .DS_Store
 *.ipynb
 log/*
-pipeline/*
+build
 .gitignore
 .gitmodules
 .dockerignore
