@@ -12,4 +12,4 @@ The date string have to follow the pattern: "YYYYmmDD".
 | Parameter | type | Description | Example |
 | :---: | :---: | :--- | :---: |
 | start_date | string | Start date to get competition data. | '20180928' |
-| end_date | string | Start date to get competition data. | '20181231' |
+| end_date | string | End date to get competition data. | '20181231' |
