@@ -68,10 +68,8 @@ def task_crawler(start_date, end_date, game_type):
 def task_update_db(keep_update):
     click.echo('update db')
     if keep_update:
-        with open('config/configuration.yml') as config:
-            config = yaml.load(config, Loader=yaml.FullLoader)
         Util().load_environment_variable()
-        schedule.every(config['data_updater']['update_period']).hours.do(DataUpdater().update_db)
+        schedule.every(Util().get_config()['data_updater']['update_period']).hours.do(DataUpdater().update_db)
 
         while True:
             schedule.run_pending()
