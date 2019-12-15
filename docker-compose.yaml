@@ -5,6 +5,7 @@ services:
       context: ./
       dockerfile: ./build/Dockerfile
     image: allensyk/sports_data_crawler:0.1
+    container_name: crawler
     environment:
       DB_HOST: 192.168.2.3
       DB_PORT: 3306
