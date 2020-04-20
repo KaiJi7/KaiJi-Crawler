@@ -391,7 +391,7 @@ class Crawler(object):
             self.game_info[db_const.local_total_point_threshold].append(
                 float(local_total_point)
             )
-            self.game_info["local_total_point_threshold_under_response_ratio"].append(
+            self.game_info["local_total_point_under_threshold_response_ratio"].append(
                 float(total_point_under_response)
             )
         else:
