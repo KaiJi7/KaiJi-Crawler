@@ -58,8 +58,10 @@ Record original data about competition and gambling information.
 | response_ratio_if_hit_spread_point | float | Response ratio if the result after point spread was tie. | 1.5 |
 | local_host_point_spread | float | Point spread gambling of Taiwan banker in host view. | 6.5 |
 | local_host_point_spread_response_ratio | float | Response ratio of point spread gambling in Taiwan. | 1.8 |
+| local_guest_point_spread_response_ratio | float | Response ratio of point spread gambling in Taiwan. | 1.7 |
 | local_total_point_threshold | float | Total point gambling of Taiwan banker. | 218.5 |
-| local_total_point_threshold_response_ratio | float | Response ratio if won the total point gambling in Taiwan. | 1.8 |
+| local_total_point_under_threshold_response_ratio | float | Response ratio of under if won the total point gambling in Taiwan. | 1.8 |
+| local_total_point_over_threshold_response_ratio | float | Response ratio of over if won the total point gambling in Taiwan. | 1.7 |
 | local_origin_guest_response_ratio | float | Response ratio of guest win without point spread. | 2.7 |
 | local_origin_host_response_ratio | float | Response ratio of host win without point spread. | 1.28 |
 
