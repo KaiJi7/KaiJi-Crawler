@@ -1,4 +1,4 @@
-from sqlalchemy import MetaData, Table, Column, Integer, String, Float
+from sqlalchemy import MetaData, Table, Column, Integer, String, Float, Index
 
 from config.constant import database as db_constant
 from config.constant import global_constant
@@ -45,6 +45,7 @@ class DbConstructor(object):
                           Column(db_constant.local_total_point_threshold_response_ratio, Float),
                           Column(db_constant.local_origin_guest_response_ratio, Float),
                           Column(db_constant.local_origin_host_response_ratio, Float),
+                          Index(db_constant.game_date, db_constant.gamble_id, db_constant.game_type, unique=True),
                           schema=self.config[global_constant.DB][global_constant.schema])
 
         self.create_if_not_exist(game_data)
