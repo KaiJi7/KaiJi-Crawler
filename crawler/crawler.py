@@ -405,7 +405,7 @@ class Crawler(object):
 
             # add response ratio of total point over
             _, total_point_over_response = self.get_threshold_and_response(row_content)
-            self.game_info["local_total_point_threshold_over_response_ratio"].append(
+            self.game_info["local_total_point_over_threshold_response_ratio"].append(
                 float(total_point_over_response)
             )
 
