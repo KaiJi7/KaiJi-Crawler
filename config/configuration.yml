@@ -1,11 +1,11 @@
 logging:
   level: DEBUG
 DB:
-  host: 192.168.2.3
+  host: 192.168.31.73
   port: 3306
   schema: gambling_simulation
-  user: user
-  password: password
+  user: allen
+  password: aldbpw
 crawler:
   dateFormat: '%Y%m%d'
   urlPattern: https://www.playsport.cc/predictgame.php?action=scale&allianceid={game_type}&gametime={game_date}&sid={group_type}
