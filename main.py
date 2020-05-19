@@ -48,7 +48,7 @@ def task_create_db(force, create_schema, create_table):
     if create_schema:
         constructor.create_schema(force=force)
     if create_table:
-        constructor.create_table()
+        constructor.create_tables()
 
 
 @click.command("crawl_data", help="Start crawler to get sports gambling data.")
