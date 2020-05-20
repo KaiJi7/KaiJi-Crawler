@@ -48,11 +48,13 @@ class DbConstructor(object):
             Column("response_ratio_if_hit_spread_point", Float),
             Column("local_host_point_spread", Float),
             Column("local_host_point_spread_response_ratio", Float),
+            Column("local_guest_point_spread_response_ratio", Float),
             Column("local_total_point_threshold", Float),
-            Column("local_total_point_threshold_response_ratio", Float),
+            Column("local_total_point_under_threshold_response_ratio", Float),
+            Column("local_total_point_over_threshold_response_ratio", Float),
             Column("local_origin_guest_response_ratio", Float),
             Column("local_origin_host_response_ratio", Float),
-            Index("game_date", "gamble_id", "game_type", unique=True),
+            Index("game_index", "game_date", "gamble_id", "game_type", unique=True),
             schema=self.config[global_constant.DB][global_constant.schema],
         )
 
@@ -68,7 +70,7 @@ class DbConstructor(object):
             Column("host_win_point_spread_local", Integer),
             Column("over_total_point_national", Integer),
             Column("over_total_point_local", Integer),
-            Index("game_date", "gamble_id", "game_type", unique=True),
+            Index("game_index", "game_date", "gamble_id", "game_type", unique=True),
             schema=self.config[global_constant.DB][global_constant.schema],
         )
 
@@ -101,7 +103,7 @@ class DbConstructor(object):
                 Column("population_local_total_point_under", Integer),
                 Column("percentage_local_original_host", Integer),
                 Column("population_local_original_host", Integer),
-                Index("game_date", "gamble_id", "game_type", unique=True),
+                Index("game_index", "game_date", "gamble_id", "game_type", unique=True),
                 schema=self.config[global_constant.DB][global_constant.schema],
             )
 
