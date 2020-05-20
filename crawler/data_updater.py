@@ -2,6 +2,7 @@ import datetime
 import functools
 
 import yaml
+from dateutil.relativedelta import relativedelta
 from flatten_dict import flatten
 
 from config.constant import database as db_constant
@@ -82,6 +83,7 @@ class DataUpdater(object):
                         self.get_latest_record()[game_type], latest_game
                     )
                 )
+
                 crawl_range[game_type] = self.date_overlap(
                     self.get_latest_record()[game_type], latest_game, game_type
                 )
@@ -93,31 +95,44 @@ class DataUpdater(object):
         self.logger.info("start get date overlap of game type: {}".format(game_type))
         overlap = []
 
+        # the available data since 1 year from now only
+        valid_date_since = int(
+            datetime.datetime.strftime(
+                datetime.datetime.now() - relativedelta(years=1), "%Y%m%d"
+            )
+        )
+
         for season in self.game_season[game_type].keys():
-            if latest_record < self.game_season[game_type][season]["start"]:
+            latest_record += 1
+            if 1 < latest_record < self.game_season[game_type][season]["start"]:
                 self.logger.debug(
-                    "start date of the season: {} after latest record: {}".format(
-                        season, latest_record
-                    )
+                    f"start date of the season: {season} after latest record: {latest_record}"
                 )
-                overlap.append(
-                    CrawlRange(
-                        min(self.game_season[game_type][season]["start"], latest_game),
-                        min(self.game_season[game_type][season]["end"], latest_game),
-                    )
+                begin = min(
+                    max(
+                        self.game_season[game_type][season]["start"], valid_date_since,
+                    ),
+                    latest_game,
                 )
-            elif latest_record < self.game_season[game_type][season]["end"]:
+                end = min(
+                    max(self.game_season[game_type][season]["end"], valid_date_since,),
+                    latest_game,
+                )
+                if begin < end:
+                    overlap.append(CrawlRange(begin, end))
+            elif (
+                1 < latest_record < self.game_season[game_type][season]["end"]
+                and latest_record < latest_game
+            ):
                 self.logger.debug(
-                    "end date of the season: {} after latest record: {}".format(
-                        season, latest_record
-                    )
+                    f"end date of the season: {season} after latest record: {latest_record}"
                 )
-                overlap.append(
-                    CrawlRange(
-                        latest_record,
-                        min(self.game_season[game_type][season]["end"], latest_game),
-                    )
+                end = min(
+                    max(self.game_season[game_type][season]["end"], valid_date_since,),
+                    latest_game,
                 )
+                if latest_record < end:
+                    overlap.append(CrawlRange(latest_record, end,))
             else:
                 self.logger.debug(
                     "the latest record after the season, no overlap of this season"
