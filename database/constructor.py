@@ -58,22 +58,6 @@ class DbConstructor(object):
             schema=self.config[global_constant.DB][global_constant.schema],
         )
 
-        game_judgement = Table(
-            "game_judgement",
-            MetaData(),
-            Column("id", Integer, primary_key=True, autoincrement="ignore_fk"),
-            Column("game_date", Integer),
-            Column("gamble_id", Integer),
-            Column("game_type", String(16)),
-            Column("host_win_original", Integer),
-            Column("host_win_point_spread_national", Integer),
-            Column("host_win_point_spread_local", Integer),
-            Column("over_total_point_national", Integer),
-            Column("over_total_point_local", Integer),
-            Index("game_index", "game_date", "gamble_id", "game_type", unique=True),
-            schema=self.config[global_constant.DB][global_constant.schema],
-        )
-
         # prediction table template for each prediction group
         def template(table_name):
             return Table(
