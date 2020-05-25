@@ -94,7 +94,6 @@ class DbConstructor(object):
         # create each table
         self.create_if_not_exist(game_data)
         self.create_if_not_exist(game_data)
-        self.create_if_not_exist(game_judgement)
         self.create_if_not_exist(template("all_member"))
         self.create_if_not_exist(template("more_than_sixty"))
         self.create_if_not_exist(template("all_prefer"))
