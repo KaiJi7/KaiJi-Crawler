@@ -3,7 +3,7 @@ all_member = 'all_member'
 more_than_sixty = 'more_than_sixty'
 all_prefer = 'all_prefer'
 top_100 = 'top_100'
-prediction_group = {all_member: 0, more_than_sixty: 1, all_prefer: 2, top_100: 3}
+prediction_groups = {all_member: 0, more_than_sixty: 1, all_prefer: 2, top_100: 3}
 
 
 chinese_mapping = {'客': 'guest', '主': 'host', '贏': True, '輸': False}
