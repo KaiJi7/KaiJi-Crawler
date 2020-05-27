@@ -2,9 +2,9 @@ import os
 
 import pymysql
 import yaml
+from pymongo import MongoClient
 from sqlalchemy import create_engine
 
-from config.constant import global_constant
 from config.logger import get_logger
 from util.singleton import Singleton
 
@@ -20,28 +20,28 @@ class Util(metaclass=Singleton):
         with open("config/configuration.yml") as config:
             config = yaml.load(config, Loader=yaml.FullLoader)
 
-            config[global_constant.DB][global_constant.host] = (
+            config["DB"]["host"] = (
                 os.environ.get("DB_HOST")
                 if os.environ.get("DB_HOST")
-                else config[global_constant.DB][global_constant.host]
+                else config["DB"]["host"]
             )
 
-            config[global_constant.DB][global_constant.port] = (
+            config["DB"]["port"] = (
                 int(os.environ.get("DB_PORT"))
                 if os.environ.get("DB_PORT")
-                else config[global_constant.DB][global_constant.port]
+                else config["DB"]["port"]
             )
 
-            config[global_constant.DB][global_constant.user] = (
+            config["DB"]["user"] = (
                 os.environ.get("DB_USERNAME")
                 if os.environ.get("DB_USERNAME")
-                else config[global_constant.DB][global_constant.user]
+                else config["DB"]["user"]
             )
 
-            config[global_constant.DB][global_constant.password] = (
+            config["DB"]["password"] = (
                 os.environ.get("DB_PASSWORD")
                 if os.environ.get("DB_PASSWORD")
-                else config[global_constant.DB][global_constant.password]
+                else config["DB"]["password"]
             )
 
         # overwrite config by environment variable
@@ -52,31 +52,41 @@ class Util(metaclass=Singleton):
         self.logger.debug("finish update config file")
         return
 
-    def get_config(self):
-        self.logger.info("getting config")
-        return self.config
+    @classmethod
+    def get_config(cls):
+        return Util().config
 
-    def get_db_connection(self):
-        self.logger.debug("getting db connection")
-        user = self.config[global_constant.DB][global_constant.user]
-        password = self.config[global_constant.DB][global_constant.password]
-        host = self.config[global_constant.DB][global_constant.host]
-        port = self.config[global_constant.DB][global_constant.port]
+    @classmethod
+    def get_db_connection(cls):
+        user = Util().config["DB"]["user"]
+        password = Util().config["DB"]["password"]
+        host = Util().config["DB"]["host"]
+        port = Util().config["DB"]["port"]
         return pymysql.connect(
             host=host,
             user=user,
             passwd=password,
             port=port,
-            db=self.config[global_constant.DB][global_constant.schema],
+            db=Util().config["DB"]["schema"],
             charset="utf8",
         )
 
-    def get_db_engine(self):
-        self.logger.info("getting db engine")
-        user = self.config[global_constant.DB][global_constant.user]
-        password = self.config[global_constant.DB][global_constant.password]
-        host = self.config[global_constant.DB][global_constant.host]
-        port = self.config[global_constant.DB][global_constant.port]
+    @classmethod
+    def get_db_engine(cls):
+        user = Util().config["DB"]["user"]
+        password = Util().config["DB"]["password"]
+        host = Util().config["DB"]["host"]
+        port = Util().config["DB"]["port"]
         return create_engine(
             "mysql+pymysql://{}:{}@{}:{}".format(user, password, host, port)
+        )
+
+    @classmethod
+    def get_mongo_client(cls):
+        return MongoClient(
+            host=Util().config["mongoDb"]["host"],
+            port=Util().config["mongoDb"]["port"],
+            username=Util().config["mongoDb"]["username"],
+            password=Util().config["mongoDb"]["password"],
+            authMechanism="SCRAM-SHA-1",
         )
