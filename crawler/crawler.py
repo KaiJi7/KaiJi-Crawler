@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 
 from config.constant.crawler import prediction_groups, team_name_mapping
 from config.logger import get_logger
+from config.constant.global_constant import game_type_map
 from util.util import Util
 
 
@@ -44,30 +45,36 @@ class Crawler:
             date = datetime.datetime.strftime(
                 date, self.config["crawler"]["dateFormat"]
             )
+
             # for each prediction group
             for prediction_group in prediction_groups.keys():
                 res = requests.get(
                     self.get_url(date, prediction_groups[prediction_group])
                 )
                 soup = BeautifulSoup(res.text, "html.parser")
+
+                # get game info for only once
                 if prediction_group == "all_member":
-                    # get game info for once
+
                     self.get_game_data(date, soup)
-                    self.write_to_db(
-                        pd.DataFrame.from_dict(self.game_info), "game_data"
-                    )
+                    # self.write_to_db(
+                    #     pd.DataFrame.from_dict(self.game_info), "game_data"
+                    # )
                     # clean cache after write to db
                     total_crawled_game += len(self.game_info["gamble_id"])
-                    self.game_info = defaultdict(list)
+                    # self.game_info = defaultdict(list)
 
                 # get prediction info for each prediction group
                 self.get_prediction_data(date, soup, prediction_group)
-                self.write_to_db(
-                    pd.DataFrame.from_dict(self.prediction[prediction_group]),
-                    "{}_{}".format("prediction_data", prediction_group),
-                )
+                # self.write_to_db(
+                #     pd.DataFrame.from_dict(self.prediction[prediction_group]),
+                #     "{}_{}".format("prediction_data", prediction_group),
+                # )
                 # clean cache after write to db
-                self.prediction[prediction_group] = defaultdict(list)
+                # self.prediction[prediction_group] = defaultdict(list)
+
+            yield {"game_data": self.game_info, "prediction_data": self.prediction}
+            self.init_prediction_data()
 
         self.logger.info(
             "crawler task done, total crawled games: {}, days: {}".format(
@@ -75,6 +82,15 @@ class Crawler:
             )
         )
         return
+
+    def init_prediction_data(self):
+        self.game_info = defaultdict(list)
+        self.prediction = {
+            "all_member": defaultdict(list),
+            "more_than_sixty": defaultdict(list),
+            "all_prefer": defaultdict(list),
+            "top_100": defaultdict(list),
+        }
 
     def get_game_data(self, date, soup):
         self.logger.debug("getting game data: {}".format(date))
@@ -470,7 +486,7 @@ class Crawler:
 
     def get_url(self, date, member_type=1):
         return self.config["crawler"]["urlPattern"].format(
-            game_type="game_type_map"[self.game_type],
+            game_type=game_type_map[self.game_type],
             game_date=date,
             group_type=member_type,
         )

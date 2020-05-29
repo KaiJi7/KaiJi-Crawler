@@ -93,19 +93,26 @@ def task_crawler(start_date, end_date, game_type):
     help="Keeping update.",
     show_default=True,
 )
-def task_update_db(keep_update):
+@click.option(
+    "--db_type",
+    type=click.Choice(["sql", "no_sql"]),
+    default="no_sql",
+    help="DB type.",
+    show_default=DbConstructor,
+)
+def task_update_db(keep_update, db_type):
     click.echo("update db")
     if keep_update:
         Util().load_environment_variable()
-        schedule.every(Util().get_config()["data_updater"]["update_period"]).hours.do(
-            DataUpdater().update_db
+        schedule.every(Util.get_config()["data_updater"]["update_period"]).hours.do(
+            DataUpdater(db_type).update_db
         )
 
         while True:
             schedule.run_pending()
             time.sleep(60)
     else:
-        DataUpdater().update_db()
+        DataUpdater().update_db(db_type=db_type)
 
 
 if __name__ == "__main__":
