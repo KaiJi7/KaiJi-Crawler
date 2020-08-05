@@ -6,8 +6,8 @@ import yaml
 from dateutil.relativedelta import relativedelta
 from flatten_dict import flatten
 
-from config.constant import database as db_constant
-from config.logger import get_logger
+from configs.constant import database as db_constant
+from configs.logger import get_logger
 from crawler.crawler import Crawler
 from util.util import Util
 
@@ -19,7 +19,7 @@ class MongoDbDataUpdater:
         self.db = Util.get_db_connection()
         self.engine = Util.get_db_engine()
 
-        with open("config/game_season.yml") as config:
+        with open("configs/game_season.yml") as config:
             self.game_season = yaml.load(config, Loader=yaml.FullLoader)
 
     def update_db(self):

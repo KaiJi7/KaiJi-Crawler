@@ -12,6 +12,7 @@ crawler:
 data_updater:
   update_period: 24
 mongoDb:
+  db: gambling_simulation
   host: 192.168.31.73
   password: password
   port: 27017

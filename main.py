@@ -5,8 +5,11 @@ import click
 import schedule
 import yaml
 from dateutil.relativedelta import relativedelta
+import logging
+from db.client import Client
+from db.collection.sports import SportsData
 
-from config.constant import global_constant
+from configs.constant import global_constant
 from crawler.crawler import Crawler
 from crawler.data_updater import DataUpdater
 from database.constructor import DbConstructor
@@ -115,8 +118,32 @@ def task_update_db(keep_update, db_type):
         DataUpdater().update_db(db_type=db_type)
 
 
+def init_logger():
+    log_level = {
+        'DEBUG'
+    }
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(filename)s %(lineno)d %(name)s: %(levelname)s %(message)s')
+    logging.debug('logger initialized')
+
+
+def main():
+    init_logger()
+    # Config()
+    Client()
+    # a = SportsData(**{
+    #     'gamble_id': 1,
+    #     'guest': {
+    #         'name': 'dqwd'
+    #     }
+    # })
+    # SportsData.objects.insert(a)
+    Crawler('NBA').crawl('20200802')
+
+
 if __name__ == "__main__":
-    cli.add_command(task_create_db)
-    cli.add_command(task_crawler)
-    cli.add_command(task_update_db)
-    cli()
+    main()
+    # cli.add_command(task_create_db)
+    # cli.add_command(task_crawler)
+    # cli.add_command(task_update_db)
+    # cli()

@@ -1,4 +1,4 @@
-# config
+# configs
 support_strategy = 'support_strategy'
 gambling = 'gambling'
 combination = 'combination'

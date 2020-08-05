@@ -5,19 +5,19 @@ import yaml
 from pymongo import MongoClient
 from sqlalchemy import create_engine
 
-from config.logger import get_logger
+from configs.logger import get_logger
 from util.singleton import Singleton
 
 
 class Util(metaclass=Singleton):
     def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
-        with open("config/configuration.yml") as config:
+        with open("configs/config.yml") as config:
             self.config = yaml.load(config, Loader=yaml.FullLoader)
 
     def load_environment_variable(self):
-        self.logger.info("start load environment variables and overwrite config file")
-        with open("config/configuration.yml") as config:
+        self.logger.info("start load environment variables and overwrite configs file")
+        with open("configs/config.yml") as config:
             config = yaml.load(config, Loader=yaml.FullLoader)
 
             config["DB"]["host"] = (
@@ -44,12 +44,12 @@ class Util(metaclass=Singleton):
                 else config["DB"]["password"]
             )
 
-        # overwrite config by environment variable
-        with open("config/configuration.yml", "w") as new_config:
+        # overwrite configs by environment variable
+        with open("configs/configs.yml", "w") as new_config:
             yaml.dump(config, new_config)
 
         self.config = config
-        self.logger.debug("finish update config file")
+        self.logger.debug("finish update configs file")
         return
 
     @classmethod

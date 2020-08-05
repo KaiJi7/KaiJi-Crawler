@@ -8,8 +8,8 @@ from sqlalchemy import (
     Index,
 )
 
-from config.constant import global_constant
-from config.logger import get_logger
+from configs.constant import global_constant
+from configs.logger import get_logger
 from util.util import Util
 
 

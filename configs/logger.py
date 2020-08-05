@@ -10,7 +10,7 @@ def get_logger(name):
     global init
     if not init:
         os.makedirs('log', exist_ok=True)
-        with open('config/configuration.yml', 'r') as config:
+        with open('configs/config.yml', 'r') as config:
             level = logging.getLevelName(yaml.load(config, Loader=yaml.FullLoader)['logging']['level'])
             logging.basicConfig(level=level,
                                 format='%(asctime)s %(filename)s %(lineno)d %(name)s: %(levelname)s %(message)s',

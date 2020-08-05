@@ -1,7 +1,7 @@
 from sqlalchemy import MetaData, Table, Column, Integer, String, Float, Index
 
-from config.constant import global_constant
-from config.logger import get_logger
+from configs.constant import global_constant
+from configs.logger import get_logger
 from util.util import Util
 
 
@@ -28,7 +28,7 @@ class DbConstructor(object):
         return
 
     def create_tables(self):
-        # self.engine.execute('USE {}'.format(self.config[string_constant.DB][string_constant.schema]))
+        # self.engine.execute('USE {}'.format(self.configs[string_constant.DB][string_constant.schema]))
         game_data = Table(
             "game_data",
             MetaData(),

@@ -6,10 +6,13 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-from config.constant.crawler import prediction_groups, team_name_mapping
-from config.logger import get_logger
-from config.constant.global_constant import game_type_map
+from configs.constant.crawler import prediction_groups, team_name_mapping
+from configs.logger import get_logger
+from configs.constant.global_constant import game_type_map
 from util.util import Util
+from crawler.row_parser import RowParser
+
+import logging
 
 
 class Crawler:
@@ -83,6 +86,24 @@ class Crawler:
         )
         return
 
+    def crawl(self, date):
+        logging.debug(f'start crawling: {date}')
+        res = requests.get(
+            self.get_url(date)
+        )
+        soup = BeautifulSoup(res.text, "html.parser")
+        for row_content in soup.find("tbody").findAll("tr", {"class": "game-set"}):
+            game_id = RowParser.gamble_id(row_content)
+            game_time = RowParser.game_time(row_content)
+            game_time.replace(date, '%Y%m%d')
+            team_name = RowParser.team_name(row_content)
+            scores = RowParser.scores(row_content)
+            tps = RowParser.total_point_threshold(row_content)
+            tpr = RowParser.total_point_response(row_content)
+            spread_point = RowParser.spread_point(row_content)
+            ori_resp = RowParser.origin_response(row_content)
+
+
     def init_prediction_data(self):
         self.game_info = defaultdict(list)
         self.prediction = {
@@ -97,7 +118,7 @@ class Crawler:
         guest_row = True
         for row_content in soup.find("tbody").findAll("tr", {"class": "game-set"}):
             if guest_row:
-                assert self.check_data_consistent(self.game_info)
+                # assert self.check_data_consistent(self.game_info)
                 self.append_game_id_and_type(row_content, date)
                 self.append_game_time(row_content)
                 self.append_team_name(row_content)
@@ -265,6 +286,10 @@ class Crawler:
             "append gamble id: {}, game type: {}".format(gamble_id, self.game_type)
         )
         return
+
+    def n_append_game_id_and_type(self, row_content):
+        gamble_id = row_content.find("td", "td-gameinfo").find("h3").text
+
 
     def append_game_time(self, row_content):
         self.logger.info(

@@ -1,6 +1,6 @@
 import yaml
 
-from config.logger import get_logger
+from configs.logger import get_logger
 from crawler.common import get_crawl_range, write_to_db
 from crawler.crawler import Crawler
 from util.util import Util
@@ -13,7 +13,7 @@ class DataUpdater:
         self.db = Util.get_db_connection()
         self.engine = Util.get_db_engine()
 
-        with open("config/game_season.yml") as config:
+        with open("configs/game_season.yml") as config:
             self.game_season = yaml.load(config, Loader=yaml.FullLoader)
 
     def update_db(self, db_type):

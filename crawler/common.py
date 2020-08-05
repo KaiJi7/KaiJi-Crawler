@@ -6,7 +6,7 @@ import yaml
 from dateutil.relativedelta import relativedelta
 from flatten_dict import flatten
 
-from config.logger import get_logger
+from configs.logger import get_logger
 from util.util import Util
 
 logger = get_logger("common")
@@ -21,7 +21,7 @@ class CrawlRange:
 def get_crawl_range(latest_records):
     crawl_range = {}
 
-    with open("config/game_season.yml") as config:
+    with open("configs/game_season.yml") as config:
         game_season = yaml.load(config, Loader=yaml.FullLoader)
 
     for game_type, season_info in game_season.items():

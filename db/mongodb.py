@@ -1,4 +1,4 @@
-from config.logger import get_logger
+from configs.logger import get_logger
 from util.util import Util
 
 

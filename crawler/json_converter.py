@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from pymongo import MongoClient
 
-from config.logger import get_logger
+from configs.logger import get_logger
 from util.util import Util
 from util.singleton import Singleton
 
