@@ -4,7 +4,7 @@ from db.collection.sports import TeamInfo
 import re
 
 
-class RowParser:
+class PredictionParser:
     @classmethod
     def gamble_id(cls, row_content):
         return row_content.find("td", "td-gameinfo").find("h3").text
@@ -79,12 +79,8 @@ class RowParser:
         return data if len(data) == 2 else (0, 0)
 
     @classmethod
-    def guest_origin_response(cls, row_content):
+    def origin_response(cls, row_content):
         local_origin_guest_response_ratio = row_content.find(
             "td", {"class": "td-bank-bet03"}
         ).text.strip()
         return re.findall(r"\d+\.\d+", local_origin_guest_response_ratio)
-
-    @classmethod
-    def is_guest_row(cls, row_content):
-        return row_content.find("td", {"class": "td-teaminfo"}).text != ''

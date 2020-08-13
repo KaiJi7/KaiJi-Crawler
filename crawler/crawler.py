@@ -11,6 +11,7 @@ from configs.logger import get_logger
 from configs.constant.global_constant import game_type_map
 from util.util import Util
 from crawler.row_parser import RowParser
+from db.collection.sports import SportsData
 
 import logging
 
@@ -93,15 +94,27 @@ class Crawler:
         )
         soup = BeautifulSoup(res.text, "html.parser")
         for row_content in soup.find("tbody").findAll("tr", {"class": "game-set"}):
-            game_id = RowParser.gamble_id(row_content)
+            gamble_id = RowParser.gamble_id(row_content)
             game_time = RowParser.game_time(row_content)
             game_time.replace(date, '%Y%m%d')
             team_name = RowParser.team_name(row_content)
             scores = RowParser.scores(row_content)
-            tps = RowParser.total_point_threshold(row_content)
+            tpt = RowParser.total_point_threshold(row_content)
             tpr = RowParser.total_point_response(row_content)
             spread_point = RowParser.spread_point(row_content)
             ori_resp = RowParser.origin_response(row_content)
+
+            document = SportsData()
+            document.gamble_id = gamble_id
+            document.game_time = game_time
+
+            document.guest.name = team_name['guest']
+            document.host.name = team_name['host']
+            document.guest.score = scores['guest']
+            document.host.score = scores['host']
+
+            document.gamble_info.original.response = ori_resp
+            document.gamble_info.original.judgement = 'guest' if document.host.score < document.guest.score else 'host'
 
 
     def init_prediction_data(self):
