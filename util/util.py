@@ -1,3 +1,4 @@
+import logging
 import os
 
 import pymysql
@@ -5,18 +6,16 @@ import yaml
 from pymongo import MongoClient
 from sqlalchemy import create_engine
 
-from configs.logger import get_logger
 from util.singleton import Singleton
 
 
 class Util(metaclass=Singleton):
     def __init__(self):
-        self.logger = get_logger(self.__class__.__name__)
         with open("configs/config.yml") as config:
             self.config = yaml.load(config, Loader=yaml.FullLoader)
 
     def load_environment_variable(self):
-        self.logger.info("start load environment variables and overwrite configs file")
+        logging.info("start load environment variables and overwrite configs file")
         with open("configs/config.yml") as config:
             config = yaml.load(config, Loader=yaml.FullLoader)
 
@@ -49,7 +48,7 @@ class Util(metaclass=Singleton):
             yaml.dump(config, new_config)
 
         self.config = config
-        self.logger.debug("finish update configs file")
+        logging.debug("finish update configs file")
         return
 
     @classmethod

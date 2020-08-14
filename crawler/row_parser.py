@@ -1,5 +1,5 @@
 from datetime import datetime
-from configs.constant.crawler import team_name_mapping
+from crawler.common import team_name_mapping
 from db.collection.sports import TeamInfo
 import re
 import logging

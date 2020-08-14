@@ -20,8 +20,8 @@ class DocumentBuilder:
     def game_time(self, data):
         self.document["game_time"] = data
 
-    def sports_type(self, data):
-        self.document["sports_type"] = data
+    def game_type(self, data):
+        self.document["game_type"] = data
 
     def guest_name(self, data):
         self.document["guest"]["name"] = data

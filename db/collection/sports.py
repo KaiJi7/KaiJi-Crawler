@@ -68,7 +68,7 @@ class SportsData(mongoengine.Document):
     # game_id = mongoengine.StringField(required=True)
     game_time = mongoengine.DateTimeField()
     gamble_id = mongoengine.StringField()
-    sports_type = mongoengine.StringField(required=True)
+    game_type = mongoengine.StringField(required=True)
     # guest = mongoengine.ReferenceField(TeamInfo)
     # host = mongoengine.ReferenceField(TeamInfo)
     guest = mongoengine.DictField()
@@ -78,20 +78,23 @@ class SportsData(mongoengine.Document):
     meta = {
         "indexes": [
             "game_time",
-            "sports_type",
+            "game_type",
             {
-                "fields": ["game_time", "sports_type", "guest.name", "host.name"],
+                "fields": ["game_time", "game_type", "guest.name", "host.name"],
                 "unique": True,
             },
         ]
     }
+
+    def __str__(self):
+        return f'game type: {self.game_type}, gamble id: {self.gamble_id}'
 
 
 template = {
     # 'game_id': None,
     "game_time": None,
     "gamble_id": None,
-    "sports_type": None,
+    "game_type": None,
     "guest": {"name": None, "score": None,},
     "host": {"name": None, "score": None,},
     "gamble_info": {
