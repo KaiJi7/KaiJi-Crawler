@@ -21,7 +21,7 @@ commander:
     - NBA
     - MLB
     - NPB
-    -
+
 mongoDb:
   db: gambling_simulation
   host: localhost
