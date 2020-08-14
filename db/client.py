@@ -8,7 +8,7 @@ class Client(metaclass=Singleton):
     def __init__(self):
         config = Util.get_config()
         connect(
-            config["mongoDb"]["db"],
+            db=config["mongoDb"]["db"],
             host=config["mongoDb"]["host"],
             port=config["mongoDb"]["port"],
             username=config["mongoDb"]["username"],

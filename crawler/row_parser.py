@@ -2,6 +2,7 @@ from datetime import datetime
 from configs.constant.crawler import team_name_mapping
 from db.collection.sports import TeamInfo
 import re
+import logging
 
 
 class RowParser:
@@ -10,9 +11,10 @@ class RowParser:
         return row_content.find("td", "td-gameinfo").find("h3").text
 
     @classmethod
-    def game_time(cls, row_content):
+    def game_time(cls, date, row_content):
+        # TODO: consider time zone
         game_time = row_content.find("td", "td-gameinfo").find("h4").text
-        return datetime.strptime(game_time, "%p %H:%M")
+        return datetime.strptime(f"{date} {game_time}", "%Y%m%d %p %H:%M")
 
     @classmethod
     def team_name(cls, row_content):
@@ -50,22 +52,33 @@ class RowParser:
     @classmethod
     def total_point_threshold(cls, row_content):
         # TODO: test to get the float directly
-        total_point = row_content.find(
-            "td", {"class": "td-bank-bet02"}
-        ).text.strip()
+        total_point = row_content.find("td", {"class": "td-bank-bet02"}).text.strip()
+        # filter out float
+        data = re.findall(r"\d+\.\d+", total_point)
+
+        return list(map(float, data)) if len(data) == 2 else (0, 0)
+
+    @classmethod
+    def total_point_response(cls, row_content):
+        # TODO: test to get the float directly
+        total_point = row_content.find("td", {"class": "td-bank-bet02"}).text.strip()
         # filter out float
         data = re.findall(r"\d+\.\d+", total_point)
         return data if len(data) == 2 else (0, 0)
 
     @classmethod
-    def total_point_response(cls, row_content):
-        # TODO: test to get the float directly
-        total_point = row_content.find(
-            "td", {"class": "td-bank-bet02"}
-        ).text.strip()
-        # filter out float
-        data = re.findall(r"\d+\.\d+", total_point)
-        return data if len(data) == 2 else (0, 0)
+    def total_point_prediction(cls, row_content):
+        date = (
+            row_content.find("td", {"class": "td-bank-bet02"})
+            .find_next("td")
+            .text.strip()
+        )
+        date = re.findall(r"\d+", date)
+        percentage, population = date if len(date) == 2 else (0, 0)
+        return {
+            "percentage": float(percentage),
+            "population": int(population),
+        }
 
     @classmethod
     def spread_point(cls, row_content):
@@ -76,15 +89,56 @@ class RowParser:
         ).text.strip()
         # filter out float
         data = re.findall(r"[+-]?\d+\.\d+", local_host_spread_point)
+        return list(map(float, data)) if len(data) == 2 else (0, 0)
+
+    @classmethod
+    def spread_point_response(cls, row_content):
+        # TODO: test to get the float directly
+        # get local point spread info and response ratio
+        local_host_spread_point = row_content.find(
+            "td", {"class": "td-bank-bet01"}
+        ).text.strip()
+        # filter out float
+        data = re.findall(r"[+-]?\d+\.\d+", local_host_spread_point)
         return data if len(data) == 2 else (0, 0)
 
     @classmethod
-    def guest_origin_response(cls, row_content):
+    def spread_point_prediction(cls, row_content):
+        # TODO: test to get the float directly
+        date = (
+            row_content.find("td", {"class": "td-bank-bet01"})
+            .find_next("td")
+            .text.strip()
+        )
+        date = re.findall(r"\d+", date)
+        percentage, population = date if len(date) == 2 else (0, 0)
+        return {
+            "percentage": float(percentage),
+            "population": int(population),
+        }
+
+    @classmethod
+    def origin_response(cls, row_content):
         local_origin_guest_response_ratio = row_content.find(
             "td", {"class": "td-bank-bet03"}
         ).text.strip()
-        return re.findall(r"\d+\.\d+", local_origin_guest_response_ratio)
+
+        data = re.findall(r"\d+\.\d+", local_origin_guest_response_ratio)
+        if len(data) != 1:
+            logging.warning(f"unexpected data length: {data}")
+            return None
+        return float(data[0])
 
     @classmethod
-    def is_guest_row(cls, row_content):
-        return row_content.find("td", {"class": "td-teaminfo"}).text != ''
+    def original_prediction(cls, row_content):
+        date = (
+            row_content.find("td", {"class": "td-bank-bet03"})
+            .find_next("td")
+            .text.strip()
+        )
+        date = re.findall(r"\d+", date)
+        percentage, population = date if len(date) == 2 else (0, 0)
+        return {
+            "percentage": float(percentage),
+            "population": int(population),
+        }

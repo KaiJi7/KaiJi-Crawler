@@ -11,7 +11,9 @@ from configs.logger import get_logger
 from configs.constant.global_constant import game_type_map
 from util.util import Util
 from crawler.row_parser import RowParser
+from crawler.document_builder import DocumentBuilder
 from db.collection.sports import SportsData
+from mongoengine.errors import NotUniqueError
 
 import logging
 
@@ -59,7 +61,6 @@ class Crawler:
 
                 # get game info for only once
                 if prediction_group == "all_member":
-
                     self.get_game_data(date, soup)
                     # self.write_to_db(
                     #     pd.DataFrame.from_dict(self.game_info), "game_data"
@@ -88,34 +89,137 @@ class Crawler:
         return
 
     def crawl(self, date):
-        logging.debug(f'start crawling: {date}')
-        res = requests.get(
-            self.get_url(date)
-        )
+        logging.debug(f"start crawling: {date}")
+        res = requests.get(self.get_url(date))
         soup = BeautifulSoup(res.text, "html.parser")
-        for row_content in soup.find("tbody").findAll("tr", {"class": "game-set"}):
-            gamble_id = RowParser.gamble_id(row_content)
-            game_time = RowParser.game_time(row_content)
-            game_time.replace(date, '%Y%m%d')
-            team_name = RowParser.team_name(row_content)
-            scores = RowParser.scores(row_content)
-            tpt = RowParser.total_point_threshold(row_content)
-            tpr = RowParser.total_point_response(row_content)
-            spread_point = RowParser.spread_point(row_content)
-            ori_resp = RowParser.origin_response(row_content)
 
-            document = SportsData()
-            document.gamble_id = gamble_id
-            document.game_time = game_time
+        # iterate for every 2 rows, the first for the guest and game info, the second for the host
+        for guest_row, host_row in zip(
+            *[iter(soup.find("tbody").findAll("tr", {"class": "game-set"}))] * 2
+        ):
+            # parse data
+            # game info
+            gamble_id = RowParser.gamble_id(guest_row)
+            game_time = RowParser.game_time(date, guest_row)
+            team_name = RowParser.team_name(guest_row)
+            scores = RowParser.scores(guest_row)
 
-            document.guest.name = team_name['guest']
-            document.host.name = team_name['host']
-            document.guest.score = scores['guest']
-            document.host.score = scores['host']
+            # gambling info
+            tpt, tpr_over = RowParser.total_point_threshold(guest_row)
+            guest_sp, guest_spr = RowParser.spread_point(guest_row)
+            guest_or = RowParser.origin_response(guest_row)
+            _, tpr_under = RowParser.total_point_threshold(host_row)
+            host_sp, host_spr = RowParser.spread_point(host_row)
+            host_or = RowParser.origin_response(host_row)
 
-            document.gamble_info.original.response = ori_resp
-            document.gamble_info.original.judgement = 'guest' if document.host.score < document.guest.score else 'host'
+            # prediction
+            # TODO: confirm under and over
+            under_tpp = RowParser.total_point_prediction(guest_row)
+            over_tpp = RowParser.total_point_prediction(host_row)
 
+            tpj = self.judge_total_point(scores, tpt)
+            tpm = self.total_point_major_pred(tpj, under_tpp, over_tpp)
+
+            guest_spp = RowParser.spread_point_prediction(guest_row)
+            host_spp = RowParser.spread_point_prediction(host_row)
+            spj = self.judge_spread_point(scores, guest_sp, host_sp)
+            spm = self.point_major_predict(spj, guest_sp, host_sp)
+            guest_op = RowParser.original_prediction(guest_row)
+            host_op = RowParser.original_prediction(host_row)
+            oj = self.judge_original(scores)
+            om = self.point_major_predict(oj, guest_op, host_op)
+
+            # builder
+            # game info
+            builder = DocumentBuilder()
+            builder.gamble_id(gamble_id)
+            builder.game_time(game_time)
+            builder.sports_type(self.game_type)
+            builder.guest_name(team_name["guest"])
+            builder.host_name(team_name["host"])
+            builder.guest_score(scores["guest"])
+            builder.host_score(scores["host"])
+
+            # gambling info
+            builder.total_point_threshold(tpt)
+            builder.total_point_resp_under(tpr_under)
+            builder.total_point_resp_over(tpr_over)
+            builder.total_point_pred_under(under_tpp)
+            builder.total_point_pred_over(over_tpp)
+            builder.total_point_major_predict(self.total_point_major_pred())
+            builder.spread_point_guest(guest_sp)
+            builder.spread_point_host(host_sp)
+            builder.spread_point_resp_guest(guest_spr)
+            builder.spread_point_resp_host(host_spr)
+            builder.spread_point_pred_guest(guest_spp)
+            builder.spread_point_pred_host(host_spp)
+            builder.original_resp_guest(guest_or)
+            builder.original_resp_host(host_or)
+            builder.original_pred_guest(guest_op)
+            builder.original_pred_host(host_op)
+
+            # judge
+            builder.total_point_judge(self.judge_total_point(scores, tpt))
+            builder.spread_point_judge(
+                self.judge_spread_point(scores, guest_sp, host_sp)
+            )
+            builder.original_judge(self.judge_original(scores))
+
+            document = builder.to_document()
+
+            try:
+                document.save()
+            except NotUniqueError as e:
+                logging.warning(f"duplicated data: {e}")
+            except Exception as e:
+                logging.error(f"unknown error: {e}")
+
+            logging.debug(f"crawled document: {document.to_mongo()}")
+            return document
+
+    def judge_total_point(self, scores, threshold):
+        total_point = scores["guest"] + scores["host"]
+        return (
+            "under"
+            if total_point < threshold
+            else "over"
+            if total_point > threshold
+            else None
+        )
+
+    def judge_spread_point(self, scores, guest_sp, host_sp):
+        return (
+            "guest"
+            if scores["host"] + host_sp < scores["guest"]
+            else "host"
+            if scores["guest"] + guest_sp < scores["host"]
+            else None
+        )
+
+    def judge_original(self, scores):
+        return (
+            "guest"
+            if scores["host"] < scores["guest"]
+            else "host"
+            if scores["guest"] < scores["host"]
+            else None
+        )
+
+    def total_point_major_pred(self, result, under_pup, over_pup):
+        if (result == "under" and over_pup < under_pup) or (
+            result == "over" and under_pup < over_pup
+        ):
+            return True
+        else:
+            return False
+
+    def point_major_predict(self, result, guest_pup, host_pup):
+        if (result == "guest" and host_pup < guest_pup) or (
+            result == "host" and guest_pup < host_pup
+        ):
+            return True
+        else:
+            return False
 
     def init_prediction_data(self):
         self.game_info = defaultdict(list)
@@ -302,7 +406,6 @@ class Crawler:
 
     def n_append_game_id_and_type(self, row_content):
         gamble_id = row_content.find("td", "td-gameinfo").find("h3").text
-
 
     def append_game_time(self, row_content):
         self.logger.info(

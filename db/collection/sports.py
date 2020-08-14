@@ -7,33 +7,41 @@ class TeamInfo(mongoengine.Document):
 
 
 class Side(mongoengine.Document):
-    meta = {'allow_inheritance': True}
+    meta = {"allow_inheritance": True}
     host = mongoengine.FloatField()
     guest = mongoengine.FloatField()
 
 
-class SidePrediction(Side):
+class Prediction(mongoengine.Document):
+    percentage = mongoengine.FloatField()
+    population = mongoengine.IntField()
+
+
+class SidePrediction(mongoengine.Document):
+    guest = mongoengine.ReferenceField(Prediction)
+    host = mongoengine.ReferenceField(Prediction)
     major = mongoengine.BooleanField()
 
 
 class GambleInfo(mongoengine.Document):
     class TotalPoint(mongoengine.Document):
         class ThresholdResponse(mongoengine.Document):
-            meta = {'allow_inheritance': True}
+            meta = {"allow_inheritance": True}
             under = mongoengine.FloatField()
             over = mongoengine.FloatField()
 
-        class ThresholdPrediction(ThresholdResponse):
-            meta = {'allow_inheritance': True}
+        class ThresholdPrediction(mongoengine.Document):
+            meta = {"allow_inheritance": True}
+            under = mongoengine.ReferenceField(Prediction)
+            over = mongoengine.ReferenceField(Prediction)
             major = mongoengine.BooleanField()
 
-        threshold = mongoengine.IntField()
+        threshold = mongoengine.FloatField()
         response = mongoengine.ReferenceField(ThresholdResponse)
         judgement = mongoengine.StringField("^[(under)|(over)]$")
         prediction = mongoengine.ReferenceField(ThresholdPrediction)
 
     class SpreadPoint(mongoengine.Document):
-
         host = mongoengine.FloatField()
         guest = mongoengine.FloatField()
         response = mongoengine.ReferenceField(Side)
@@ -57,10 +65,65 @@ class Judgement(mongoengine.EmbeddedDocumentField):
 
 
 class SportsData(mongoengine.Document):
-    game_id = mongoengine.StringField(required=True)
+    # game_id = mongoengine.StringField(required=True)
     game_time = mongoengine.DateTimeField()
     gamble_id = mongoengine.StringField()
     sports_type = mongoengine.StringField(required=True)
-    guest = mongoengine.ReferenceField(TeamInfo)
-    host = mongoengine.ReferenceField(TeamInfo)
+    # guest = mongoengine.ReferenceField(TeamInfo)
+    # host = mongoengine.ReferenceField(TeamInfo)
+    guest = mongoengine.DictField()
+    host = mongoengine.DictField()
     gamble_info = mongoengine.ReferenceField(GambleInfo)
+
+    meta = {
+        "indexes": [
+            "game_time",
+            "sports_type",
+            {
+                "fields": ["game_time", "sports_type", "guest.name", "host.name"],
+                "unique": True,
+            },
+        ]
+    }
+
+
+template = {
+    # 'game_id': None,
+    "game_time": None,
+    "gamble_id": None,
+    "sports_type": None,
+    "guest": {"name": None, "score": None,},
+    "host": {"name": None, "score": None,},
+    "gamble_info": {
+        "total_point": {
+            "threshold": None,
+            "response": {"under": None, "over": None},
+            "judgement": None,
+            "prediction": {
+                "under": {"percentage": None, "population": None},
+                "over": {"percentage": None, "population": None},
+                "major": None,
+            },
+        },
+        "spread_point": {
+            "guest": None,
+            "host": None,
+            "response": {"guest": None, "host": None,},
+            "judgement": None,
+            "prediction": {
+                "guest": {"percentage": None, "population": None},
+                "host": {"percentage": None, "population": None},
+                "major": None,
+            },
+        },
+        "original": {
+            "response": {"guest": None, "host": None,},
+            "judgement": None,
+            "prediction": {
+                "guest": {"percentage": None, "population": None},
+                "host": {"percentage": None, "population": None},
+                "major": None,
+            },
+        },
+    },
+}
