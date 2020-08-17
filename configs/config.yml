@@ -25,8 +25,8 @@ commander:
 mongoDb:
   db: gambling_simulation
   host: localhost
-#  password: password
   port: 27017
 #  username: allen
+#  password: password
   username:
   password:
