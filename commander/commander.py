@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 
 import numpy as np
 import pandas as pd
-import yaml
 
 from crawler.crawler import Crawler
 from db.client import Client
@@ -14,8 +13,6 @@ from util.util import Util
 class Commander:
     def __init__(self):
         self.config = Util.get_config()
-        with open("configs/game_season.yml") as config:
-            self.game_season = yaml.load(config, Loader=yaml.FullLoader)
 
     def start(self):
         for game_type, crawl_range in self.crawl_range().items():
@@ -27,7 +24,9 @@ class Commander:
                 crawler.run(self.format_date(date))
 
                 # random sleep
-                time.sleep(abs(np.random.normal(self.config["commander"]["queryPeriod"])))
+                time.sleep(
+                    abs(np.random.normal(self.config["commander"]["queryPeriod"]))
+                )
 
     def format_date(self, date: datetime) -> str:
         return datetime.strftime(date, self.config["dateFormat"])

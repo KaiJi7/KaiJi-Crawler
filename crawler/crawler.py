@@ -14,7 +14,6 @@ from util.util import Util
 class Crawler:
     def __init__(self, game_type):
         self.game_type = game_type
-        self.engine = Util.get_db_engine()
 
     def run(self, date):
         logging.debug(f"start crawling: {date}")
