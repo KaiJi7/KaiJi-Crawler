@@ -8,12 +8,12 @@ from util.singleton import Singleton
 
 class Util(metaclass=Singleton):
     def __init__(self):
-        with open("configs/config.yml") as config:
+        with open("configs/config.yaml") as config:
             self.config = yaml.load(config, Loader=yaml.FullLoader)
 
     def load_environment_variable(self):
         logging.info("start load environment variables and overwrite configs file")
-        with open("configs/config.yml") as config:
+        with open("configs/config.yaml") as config:
             config = yaml.load(config, Loader=yaml.FullLoader)
 
             config["mongoDb"]["host"] = (
