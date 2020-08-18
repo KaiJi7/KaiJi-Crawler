@@ -51,20 +51,31 @@ class RowParser:
 
     @classmethod
     def total_point_threshold(cls, row_content):
-        # TODO: test to get the float directly
-        total_point = row_content.find("td", {"class": "td-bank-bet02"}).text.strip()
-        # filter out float
-        data = re.findall(r"\d+\.\d+", total_point)
-
-        return list(map(float, data)) if len(data) == 2 else (0, 0)
+        try:
+            threshold = (
+                row_content.find("td", {"class": "td-bank-bet02"})
+                .find("span", {"class": "data-wrap"})
+                .find("strong")
+                .text
+            )
+            return threshold
+        except Exception as e:
+            logging.error(e)
+            return None
 
     @classmethod
     def total_point_response(cls, row_content):
-        # TODO: test to get the float directly
-        total_point = row_content.find("td", {"class": "td-bank-bet02"}).text.strip()
-        # filter out float
-        data = re.findall(r"\d+\.\d+", total_point)
-        return data if len(data) == 2 else (0, 0)
+        try:
+            response = (
+                row_content.find("td", {"class": "td-bank-bet02"})
+                .find("span", {"class": "data-wrap"})
+                .find("span")
+                .text[2:]
+            )
+            return float(response)
+        except Exception as e:
+            logging.error(e)
+            return None
 
     @classmethod
     def total_point_prediction(cls, row_content):

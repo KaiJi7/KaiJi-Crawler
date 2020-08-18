@@ -32,10 +32,11 @@ class Crawler:
             scores = RowParser.scores(guest_row)
 
             # gambling info
-            tpt, tpr_over = RowParser.total_point_threshold(guest_row)
+            tpt = RowParser.total_point_threshold(guest_row)
+            tpr_over = RowParser.total_point_response(guest_row)
             guest_sp, guest_spr = RowParser.spread_point(guest_row)
             guest_or = RowParser.origin_response(guest_row)
-            _, tpr_under = RowParser.total_point_threshold(host_row)
+            tpr_under = RowParser.total_point_response(host_row)
             host_sp, host_spr = RowParser.spread_point(host_row)
             host_or = RowParser.origin_response(host_row)
 
@@ -109,6 +110,8 @@ class Crawler:
         return
 
     def judge_total_point(self, scores, threshold):
+        if not threshold:
+            return None
         total_point = scores["guest"] + scores["host"]
         return (
             "under"
