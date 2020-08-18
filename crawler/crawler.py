@@ -40,9 +40,8 @@ class Crawler:
             host_or = RowParser.origin_response(host_row)
 
             # prediction
-            # TODO: confirm under and over
-            under_tpp = RowParser.total_point_prediction(guest_row)
-            over_tpp = RowParser.total_point_prediction(host_row)
+            over_tpp = RowParser.total_point_prediction(guest_row)
+            under_tpp = RowParser.total_point_prediction(host_row)
 
             tpj = self.judge_total_point(scores, tpt)
             tpm = self.total_point_major_pred(tpj, under_tpp, over_tpp)
