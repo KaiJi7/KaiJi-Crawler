@@ -1,13 +1,3 @@
-import datetime
-
-import pandas as pd
-import pymysql
-import yaml
-from dateutil.relativedelta import relativedelta
-from flatten_dict import flatten
-
-from util.util import Util
-
 team_name_mapping = {
     "密爾瓦基公鹿": "MIL",
     "亞特蘭大老鷹": "ATL",
@@ -42,16 +32,3 @@ team_name_mapping = {
 }
 
 game_type_map = {"MLB": 1, "NPB": 2, "NBA": 3, "FOOTBALL": 4, "CPBL": 6, "WNBA": 7}
-
-game_season = {
-    "NBA": {
-        "18": {"begin": "20181017", "end": "20190614"},
-        "19": {"begin": "20191001", "end": "20200930"},
-        "20": {"begin": "20201001", "end": "20210630"},
-    },
-    "MLB": {
-        "18": {"begin": "20180329", "end": "20181001"},
-        "19": {"begin": "20190320", "end": "20191020"},
-    },
-    "NPB": {"18": {"begin": "20180330", "end": "20181103"}},
-}

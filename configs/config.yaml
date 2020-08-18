@@ -25,7 +25,5 @@ mongoDb:
   db: gambling_simulation
   host: localhost
   port: 27017
-#  username: allen
-#  password: password
   username:
   password:
