@@ -11,7 +11,6 @@ DB:
   password: aldbpw
 
 crawler:
-  dateFormat: '%Y%m%d'
   urlPattern: https://www.playsport.cc/predictgame.php?action=scale&allianceid={game_type}&gametime={game_date}&sid={group_type}
 
 commander:
@@ -26,7 +25,5 @@ mongoDb:
   db: gambling_simulation
   host: localhost
   port: 27017
-#  username: allen
-#  password: password
   username:
   password:
