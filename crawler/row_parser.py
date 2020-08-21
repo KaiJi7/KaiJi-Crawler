@@ -1,8 +1,8 @@
-from datetime import datetime
-from crawler.common import team_name_mapping
-from db.collection.sports import TeamInfo
-import re
 import logging
+import re
+from datetime import datetime
+
+from crawler.common import team_name_mapping
 
 
 class RowParser:
@@ -51,20 +51,31 @@ class RowParser:
 
     @classmethod
     def total_point_threshold(cls, row_content):
-        # TODO: test to get the float directly
-        total_point = row_content.find("td", {"class": "td-bank-bet02"}).text.strip()
-        # filter out float
-        data = re.findall(r"\d+\.\d+", total_point)
-
-        return list(map(float, data)) if len(data) == 2 else (0, 0)
+        try:
+            threshold = (
+                row_content.find("td", {"class": "td-bank-bet02"})
+                .find("span", {"class": "data-wrap"})
+                .find("strong")
+                .text
+            )
+            return float(threshold)
+        except Exception as e:
+            logging.error(e)
+            return None
 
     @classmethod
     def total_point_response(cls, row_content):
-        # TODO: test to get the float directly
-        total_point = row_content.find("td", {"class": "td-bank-bet02"}).text.strip()
-        # filter out float
-        data = re.findall(r"\d+\.\d+", total_point)
-        return data if len(data) == 2 else (0, 0)
+        try:
+            response = (
+                row_content.find("td", {"class": "td-bank-bet02"})
+                .find("span", {"class": "data-wrap"})
+                .find("span")
+                .text[2:]
+            )
+            return float(response)
+        except Exception as e:
+            logging.error(e)
+            return None
 
     @classmethod
     def total_point_prediction(cls, row_content):
@@ -82,29 +93,34 @@ class RowParser:
 
     @classmethod
     def spread_point(cls, row_content):
-        # TODO: test to get the float directly
-        # get local point spread info and response ratio
-        local_host_spread_point = row_content.find(
-            "td", {"class": "td-bank-bet01"}
-        ).text.strip()
-        # filter out float
-        data = re.findall(r"[+-]?\d+\.\d+", local_host_spread_point)
-        return list(map(float, data)) if len(data) == 2 else (0, 0)
+        try:
+            sp = (
+                row_content.find("td", {"class": "td-bank-bet01"})
+                .find("span", {"class": "data-wrap"})
+                .find("strong")
+                .text
+            )
+            return float(sp)
+        except Exception as e:
+            logging.error(e)
+            return None
 
     @classmethod
     def spread_point_response(cls, row_content):
-        # TODO: test to get the float directly
-        # get local point spread info and response ratio
-        local_host_spread_point = row_content.find(
-            "td", {"class": "td-bank-bet01"}
-        ).text.strip()
-        # filter out float
-        data = re.findall(r"[+-]?\d+\.\d+", local_host_spread_point)
-        return data if len(data) == 2 else (0, 0)
+        try:
+            spr = (
+                row_content.find("td", {"class": "td-bank-bet01"})
+                .find("span", {"class": "data-wrap"})
+                .find("span")
+                .text[2:]
+            )
+            return float(spr)
+        except Exception as e:
+            logging.error(e)
+            return None
 
     @classmethod
     def spread_point_prediction(cls, row_content):
-        # TODO: test to get the float directly
         date = (
             row_content.find("td", {"class": "td-bank-bet01"})
             .find_next("td")

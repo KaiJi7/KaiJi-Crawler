@@ -32,11 +32,14 @@ class Crawler:
             scores = RowParser.scores(guest_row)
 
             # gambling info
-            tpt, tpr_over = RowParser.total_point_threshold(guest_row)
-            guest_sp, guest_spr = RowParser.spread_point(guest_row)
+            tpt = RowParser.total_point_threshold(guest_row)
+            tpr_over = RowParser.total_point_response(guest_row)
+            guest_sp = RowParser.spread_point(guest_row)
+            guest_spr = RowParser.spread_point_response(guest_row)
             guest_or = RowParser.origin_response(guest_row)
-            _, tpr_under = RowParser.total_point_threshold(host_row)
-            host_sp, host_spr = RowParser.spread_point(host_row)
+            tpr_under = RowParser.total_point_response(host_row)
+            host_sp = RowParser.spread_point(host_row)
+            host_spr = RowParser.spread_point_response(host_row)
             host_or = RowParser.origin_response(host_row)
 
             # prediction
@@ -95,6 +98,7 @@ class Crawler:
 
             try:
                 logging.debug(f"saving document: {document}")
+                # TODO: cannot save chinese word
                 document.save()
             except NotUniqueError as e:
                 logging.warning(f"duplicated data: {e}")
@@ -109,6 +113,8 @@ class Crawler:
         return
 
     def judge_total_point(self, scores, threshold):
+        if not threshold:
+            return None
         total_point = scores["guest"] + scores["host"]
         return (
             "under"
@@ -152,7 +158,7 @@ class Crawler:
         else:
             return False
 
-    def get_url(self, date, group_type=1):
+    def get_url(self, date, group_type=0):
         return Util.get_config()["crawler"]["urlPattern"].format(
             game_type=game_type_map[self.game_type],
             game_date=date,
