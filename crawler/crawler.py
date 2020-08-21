@@ -125,13 +125,17 @@ class Crawler:
         )
 
     def judge_spread_point(self, scores, guest_sp, host_sp):
-        return (
-            "guest"
-            if scores["host"] + host_sp < scores["guest"]
-            else "host"
-            if scores["guest"] + guest_sp < scores["host"]
-            else None
-        )
+        try:
+            return (
+                "guest"
+                if scores["host"] + host_sp < scores["guest"]
+                else "host"
+                if scores["guest"] + guest_sp < scores["host"]
+                else None
+            )
+        except Exception as e:
+            logging.error(e)
+            return None
 
     def judge_original(self, scores):
         return (
