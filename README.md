@@ -1,6 +1,9 @@
 # Sports Data Crawler
 
-A CLI to crawl sports competition information into DB.
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
+[![Build Status](https://travis-ci.org/boennemann/badges.svg?branch=master)](https://travis-ci.org/boennemann/badges)    
+
+Crawler for sports competition data.
 
 Data source: https://www.playsport.cc/index.php
 
@@ -8,21 +11,12 @@ Supported sports:
  
 * NBA
 * MLB
-* NPB 
+* NPB
 
-## Usage
+## Build
+
 ```
-$ python3 main.py --help
-Usage: main.py [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
-
-Options:
-  --help  Show this message and exit.
-
-Commands:
-  crawl_data  Start crawler to get sports gambling data.
-  create_db   Create DB.
-  update_db   Update game data based on game_season.yml
-  
+$ docker-compose build
 ```
 
 ## Docker Image
@@ -30,6 +24,7 @@ Commands:
 ```
 $ docker pull allensyk/sports_data_crawler
 ```
+
 | Environment Variable | Description |
 | :--- | :--- |
 | DB_HOST | DB host address. |
@@ -37,62 +32,84 @@ $ docker pull allensyk/sports_data_crawler
 | DB_USERNAME | DB username. |
 | DB_PASSWORD | DB user password. |
 
-## Table Description
+## Crawled Data
 
-### game_data
+Each crawled competition data would be save as a JSON document into mongoDB.
 
-Record original data about competition and gambling information.
+### Example
 
-| Column name | Type | Description | Example |
-| :--- | :---: | :--- | :---: |
-| game_id | string | Game unique id, which comes from date(YYYYmmDD) + game id of that date. | 20190526496 |
-| play_time | string | Game start time. | 08:30 |
-| AM_PM | string | Game start on AM or PM. | AM |
-| guest | string | Abbreviation of guest team. | MIL |
-| host | string | Abbreviation of host team. | TOR |
-| guest_score | int | Final score that guest team got in this game. | 94 |
-| host_score | int | Final score that guest team got in this game. | 100 |
-| national_total_point_threshold | int | Total point gambling of national banker. | 218 |
-| national_host_point_spread | int | Point spread gambling of national banker in host view. | 8 |
-| win_if_meet_spread_point | 0 or 1 | Win or lose partial of money if the result after point spread was tie. | 1 |
-| response_ratio_if_hit_spread_point | float | Response ratio if the result after point spread was tie. | 1.5 |
-| local_host_point_spread | float | Point spread gambling of Taiwan banker in host view. | 6.5 |
-| local_host_point_spread_response_ratio | float | Response ratio of point spread gambling in Taiwan. | 1.8 |
-| local_guest_point_spread_response_ratio | float | Response ratio of point spread gambling in Taiwan. | 1.7 |
-| local_total_point_threshold | float | Total point gambling of Taiwan banker. | 218.5 |
-| local_total_point_under_threshold_response_ratio | float | Response ratio of under if won the total point gambling in Taiwan. | 1.8 |
-| local_total_point_over_threshold_response_ratio | float | Response ratio of over if won the total point gambling in Taiwan. | 1.7 |
-| local_origin_guest_response_ratio | float | Response ratio of guest win without point spread. | 2.7 |
-| local_origin_host_response_ratio | float | Response ratio of host win without point spread. | 1.28 |
-
-### prediction_data
-
-Record predictions from members, those members been classified into 4 groups, 
-* all member: all members.
-* all_prefer: all member with highly confident.
-* more_than_sixty: members with more 60% hit ratio.
-* top_100: top 100 members.
-
-| Column name | Type | Description | Example |
-| :--- | :---: | :--- | :---: |
-| game_id | string | Game unique id, which comes from date(YYYYmmDD) + game id of that date. | 20190526496 |
-| percentage_national_point_spread_guest | int | Percentage of the member group vote guest with point spread gambling on national banker. | 49 |
-| population_national_point_spread_guest | int | Population of the member group vote guest with point spread gambling on national banker. | 885 |
-| percentage_national_point_spread_host | int | Percentage of the member group vote host with point spread gambling on national banker. | 51 |
-| population_national_point_spread_host | int | Population of the member group vote host with point spread gambling on national banker. | 935 |
-| percentage_national_total_point_over | int | Percentage of the member group vote over with total score gambling on national banker. | 45 |
-| population_national_total_point_over | int | Population of the member group vote over with total score gambling on national banker. | 436 |
-| percentage_national_total_point_under | int | Percentage of the member group vote under with total score gambling on national banker. | 55 |
-| population_national_total_point_under | int | Population of the member group vote under with total score gambling on national banker. | 529 |
-| percentage_local_point_spread_guest | int | Percentage of the member group vote guest with point spread gambling on local banker. | 45 |
-| population_local_point_spread_guest | int | Population of the member group vote guest with point spread gambling on local banker. | 763 |
-| percentage_local_point_spread_host | int | Percentage of the member group vote host with point spread gambling on local banker. | 55 |
-| population_local_point_spread_host | int | Population of the member group vote host with point spread gambling on local banker. | 919 |
-| percentage_local_total_point_over | int | Percentage of the member group vote over with total score gambling on Taiwan banker. | 44 |
-| population_local_total_point_over | int | Population of the member group vote over with total score gambling on Taiwan banker. | 411 |
-| percentage_local_total_point_under | int | Percentage of the member group vote under with total score gambling on Taiwan banker. | 56 |
-| population_local_total_point_under | int | Population of the member group vote under with total score gambling on Taiwan banker. | 526 |
-| percentage_local_original_guest | int | Percentage of the member group vote guest without point spread gambling on local banker. | 18 |
-| population_local_original_guest | int | Population of the member group vote guest without point spread gambling on local banker. | 101 |
-| percentage_local_original_host | int | Percentage of the member group vote host without point spread gambling on local banker. | 82 |
-| population_local_original_host | int | Population of the member group vote host without point spread gambling on local banker. | 451 |
+```json
+{
+    "_id" : ObjectId("5f3fee94a48cf4de2d416516"),
+    "game_time" : ISODate("2019-10-04T01:00:00.000Z"),
+    "gamble_id" : "313",
+    "game_type" : "NBA",
+    "guest" : {
+        "name" : "HOU",
+        "score" : 109
+    },
+    "host" : {
+        "name" : "LAC",
+        "score" : 96
+    },
+    "gamble_info" : {
+        "total_point" : {
+            "threshold" : 224.5,
+            "response" : {
+                "under" : 1.75,
+                "over" : 1.75
+            },
+            "judgement" : "under",
+            "prediction" : {
+                "under" : {
+                    "percentage" : 30.0,
+                    "population" : 147
+                },
+                "over" : {
+                    "percentage" : 70.0,
+                    "population" : 335
+                },
+                "major" : false
+            }
+        },
+        "spread_point" : {
+            "guest" : -4.5,
+            "host" : 4.5,
+            "response" : {
+                "guest" : 1.7,
+                "host" : 1.8
+            },
+            "judgement" : "guest",
+            "prediction" : {
+                "guest" : {
+                    "percentage" : 53.0,
+                    "population" : 322
+                },
+                "host" : {
+                    "percentage" : 47.0,
+                    "population" : 283
+                },
+                "major" : true
+            }
+        },
+        "original" : {
+            "response" : {
+                "guest" : null,
+                "host" : null
+            },
+            "judgement" : "guest",
+            "prediction" : {
+                "guest" : {
+                    "percentage" : 0.0,
+                    "population" : 0
+                },
+                "host" : {
+                    "percentage" : 0.0,
+                    "population" : 0
+                },
+                "major" : false
+            }
+        }
+    }
+}
+```
