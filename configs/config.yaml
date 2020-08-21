@@ -22,7 +22,7 @@ commander:
     - NPB
 
 mongoDb:
-  db: gambling_simulation
+  db: kais
   host: localhost
   port: 27017
   username:
