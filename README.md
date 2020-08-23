@@ -40,8 +40,8 @@ Each crawled competition data would be save as a JSON document into mongoDB.
 
 ```json
 {
-    "_id" : ObjectId("5f3fee94a48cf4de2d416516"),
-    "game_time" : ISODate("2019-10-04T01:00:00.000Z"),
+    "_id" : "5f3fee94a48cf4de2d416516",
+    "game_time" : "2019-10-04T01:00:00.000Z",
     "gamble_id" : "313",
     "game_type" : "NBA",
     "guest" : {
@@ -112,4 +112,26 @@ Each crawled competition data would be save as a JSON document into mongoDB.
         }
     }
 }
+```
+
+## Setup Develop Environment
+
+cd to the root of the project
+
+### 1. Create Virtual Environment
+
+```
+$ python3 -m venv venv
+```
+
+### 2. Active Into The Virtual Environment
+
+```
+$ source venv/bin/activate
+```
+
+### 3. Install All The Dependencies
+
+```
+$ pip3 install -r requirements.txt 
 ```
