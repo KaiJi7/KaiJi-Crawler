@@ -1,8 +1,8 @@
-ARG APP_PROJECT=sports_data_crawler
+ARG APP_PROJECT=kaiji-crawler
 
 FROM python:3
 
-WORKDIR /app/sports_data_crawler
+WORKDIR /app/$APP_PROJECT
 
 COPY ./$APP_PROJECT .
 RUN pip3 install --requirement ./requirements.txt
