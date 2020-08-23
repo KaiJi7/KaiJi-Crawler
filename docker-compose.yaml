@@ -1,10 +1,10 @@
 version: '3'
 services:
-  sports_data_crawler:
+  kaiji-crawler:
     build:
       context: ./
       dockerfile: ./build/Dockerfile
-    image: allensyk/sports_data_crawler:0.2.6
+    image: allensyk/kaiji-crawler:1.0.0
     container_name: crawler
     environment:
       DB_HOST: 192.168.2.3
