@@ -21,7 +21,7 @@ commander:
     - MLB
     - NPB
 
-mongoDb:
+mongo:
   db: kais
   host: localhost
   port: 27017
