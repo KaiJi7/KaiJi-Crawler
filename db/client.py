@@ -13,11 +13,11 @@ class Client(metaclass=Singleton):
     def __init__(self):
         config = Util.get_config()
         connect(
-            db=config["mongoDb"]["db"],
-            host=config["mongoDb"]["host"],
-            port=config["mongoDb"]["port"],
-            username=config["mongoDb"]["username"],
-            password=config["mongoDb"]["password"],
+            db=config["mongo"]["db"],
+            host=config["mongo"]["host"],
+            port=config["mongo"]["port"],
+            username=config["mongo"]["username"],
+            password=config["mongo"]["password"],
             authentication_source="admin",
         )
 
