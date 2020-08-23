@@ -98,7 +98,6 @@ class Crawler:
 
             try:
                 logging.debug(f"saving document: {document}")
-                # TODO: cannot save chinese word
                 document.save()
             except NotUniqueError as e:
                 logging.warning(f"duplicated data: {e}")
