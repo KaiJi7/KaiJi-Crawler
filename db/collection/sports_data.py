@@ -87,7 +87,7 @@ class SportsData(mongoengine.Document):
     }
 
     def __str__(self):
-        return f'game type: {self.game_type}, gamble id: {self.gamble_id}'
+        return f"game type: {self.game_type}, gamble id: {self.gamble_id}"
 
 
 template = {

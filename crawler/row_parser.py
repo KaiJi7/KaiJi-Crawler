@@ -16,7 +16,7 @@ class RowParser:
     @classmethod
     def game_time(cls, date, row_content):
         game_time = row_content.find("td", "td-gameinfo").find("h4").text
-        return datetime.strptime(f"{date} {game_time}", "%Y%m%d %p %H:%M").astimezone(
+        return datetime.strptime(f"{date} {game_time}", "%Y%m%d %p %I:%M").astimezone(
             pytz.timezone(Util.get_config()["timezone"])
         )
 
