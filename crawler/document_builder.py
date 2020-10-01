@@ -1,5 +1,5 @@
-from db.collection.sports import template
-from db.collection.sports import SportsData
+from db.collection.sports_data import template
+from db.collection.sports_data import SportsData
 import logging
 
 
