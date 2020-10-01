@@ -16,16 +16,16 @@ class Util(metaclass=Singleton):
         with open("configs/config.yaml") as config:
             config = yaml.load(config, Loader=yaml.FullLoader)
 
-            config["mongoDb"]["host"] = (
+            config["mongo"]["host"] = (
                 os.environ.get("DB_HOST") or config["mongoDb"]["host"]
             )
-            config["mongoDb"]["port"] = (
+            config["mongo"]["port"] = (
                 os.environ.get("DB_PORT") or config["mongoDb"]["host"]
             )
-            config["mongoDb"]["user"] = (
+            config["mongo"]["user"] = (
                 os.environ.get("DB_USER") or config["mongoDb"]["user"]
             )
-            config["mongoDb"]["password"] = (
+            config["mongo"]["password"] = (
                 os.environ.get("DB_PASSWORD") or config["mongoDb"]["password"]
             )
 

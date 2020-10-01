@@ -4,7 +4,7 @@ import sys
 from mongoengine import connect
 from mongoengine.errors import DoesNotExist
 
-from db.collection.sports import SportsData
+from db.collection.sports_data import SportsData
 from util.singleton import Singleton
 from util.util import Util
 
