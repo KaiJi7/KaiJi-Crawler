@@ -19,8 +19,12 @@ class Crawler:
 
     def run(self, date):
         logging.debug(f"start crawling: {date}")
-        content = self.get_content(self.get_url(date))
-        soup = BeautifulSoup(content, "html.parser")
+        try:
+            content = self.get_content(self.get_url(date))
+            soup = BeautifulSoup(content.text, "html.parser")
+        except Exception as e:
+            logging.error(f"fail to get and parse content: {e}")
+            return
 
         # iterate for every 2 rows, the first for the guest and game info, the second for the host
         for guest_row, host_row in zip(
