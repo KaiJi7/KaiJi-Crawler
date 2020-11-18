@@ -9,6 +9,8 @@ from crawler.common import game_type_map
 from crawler.document_builder import DocumentBuilder
 from crawler.row_parser import RowParser
 from util.util import Util
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 
 class Crawler:
@@ -17,8 +19,8 @@ class Crawler:
 
     def run(self, date):
         logging.debug(f"start crawling: {date}")
-        res = requests.get(self.get_url(date))
-        soup = BeautifulSoup(res.text, "html.parser")
+        content = self.get_content(self.get_url(date))
+        soup = BeautifulSoup(content, "html.parser")
 
         # iterate for every 2 rows, the first for the guest and game info, the second for the host
         for guest_row, host_row in zip(
@@ -167,3 +169,10 @@ class Crawler:
             game_date=date,
             group_type=group_type,
         )
+
+    @staticmethod
+    def get_content(url: str):
+        s = requests.Session()
+        retries = Retry(total=5, backoff_factor=1, status_forcelist=[408, 502, 503, 504])
+        s.mount('http://', HTTPAdapter(max_retries=retries))
+        return s.get(url, timeout=5)
