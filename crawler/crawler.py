@@ -3,6 +3,7 @@ import sys
 
 import requests
 from bs4 import BeautifulSoup
+
 from mongoengine.errors import NotUniqueError
 
 from crawler.common import game_type_map

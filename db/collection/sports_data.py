@@ -1,4 +1,5 @@
 import mongoengine
+from mongoengine import *
 
 
 class TeamInfo(mongoengine.Document):
@@ -90,13 +91,35 @@ class SportsData(mongoengine.Document):
         return f"game type: {self.game_type}, gamble id: {self.gamble_id}"
 
 
+class GameMetaData(Document):
+    play_time = DateTimeField()  # UTC
+    gamble_id = StringField()
+    game_type = StringField(required=True)
+    guest = DictField()
+    host = DictField()
+
+    meta = {
+        "indexes": [
+            "play_time",
+            "game_type",
+            {
+                "fields": ["game_time", "game_type", "guest.name", "host.name"],
+                "unique": True,
+            },
+        ]
+    }
+
+    def __str__(self):
+        return f"game type: {self.game_type}, gamble id: {self.gamble_id}"
+
+
 template = {
     # 'game_id': None,
     "game_time": None,
     "gamble_id": None,
     "game_type": None,
-    "guest": {"name": None, "score": None,},
-    "host": {"name": None, "score": None,},
+    "guest": {"name": None, "score": None, },
+    "host": {"name": None, "score": None, },
     "gamble_info": {
         "total_point": {
             "threshold": None,
@@ -111,7 +134,7 @@ template = {
         "spread_point": {
             "guest": None,
             "host": None,
-            "response": {"guest": None, "host": None,},
+            "response": {"guest": None, "host": None, },
             "judgement": None,
             "prediction": {
                 "guest": {"percentage": None, "population": None},
@@ -120,7 +143,7 @@ template = {
             },
         },
         "original": {
-            "response": {"guest": None, "host": None,},
+            "response": {"guest": None, "host": None, },
             "judgement": None,
             "prediction": {
                 "guest": {"percentage": None, "population": None},
