@@ -5,9 +5,9 @@ from datetime import datetime, timedelta
 import numpy as np
 import pandas as pd
 
-from crawler.crawler import Crawler
-from db.client import Client
-from util.util import Util
+from src.crawler.crawler import Crawler
+from src.db.client import Client
+from src.util.util import Util
 
 
 class Commander:

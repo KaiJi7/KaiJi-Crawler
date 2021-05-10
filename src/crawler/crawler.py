@@ -6,10 +6,10 @@ from bs4 import BeautifulSoup
 
 from mongoengine.errors import NotUniqueError
 
-from crawler.common import game_type_map
-from crawler.document_builder import DocumentBuilder
-from crawler.row_parser import RowParser
-from util.util import Util
+from src.crawler.common import game_type_map
+from src.crawler.document_builder import DocumentBuilder
+from src.crawler.row_parser import RowParser
+from src.util.util import Util
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 

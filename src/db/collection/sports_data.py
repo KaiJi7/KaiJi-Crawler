@@ -103,7 +103,7 @@ class GameMetaData(Document):
             "play_time",
             "game_type",
             {
-                "fields": ["game_time", "game_type", "guest.name", "host.name"],
+                "fields": ["game_type", "guest.name", "host.name"],
                 "unique": True,
             },
         ]
