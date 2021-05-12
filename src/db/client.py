@@ -66,6 +66,10 @@ class NewClient(metaclass=Singleton):
     def insert_betting(self, betting: Betting) -> results:
         return self._col_betting.insert_one(betting.get_data())
 
+    def get_gambling(self, gambling_id: str) -> Gambling:
+        data = self._col_gambling.find_one(gambling_id)
+        return Gambling().from_dict(data)
+
 
 if __name__ == '__main__':
     p = NewClient()

@@ -29,7 +29,7 @@ template = {
 class Gambling:
     _data = template
 
-    def __init__(self, game_id):
+    def __init__(self, game_id=None):
         self._data["gam_id"] = game_id
 
     def set_type(self, gambling_type: str) -> bool:
@@ -62,3 +62,6 @@ class Gambling:
 
     def get_data(self) -> dict:
         return self._data
+
+    def from_dict(self, data: dict):
+        self.__dict__["_data"].update(data)

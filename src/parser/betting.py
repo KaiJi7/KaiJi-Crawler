@@ -1,20 +1,28 @@
-from typing import List
-from src.db.collection.betting import Betting, BET_GUEST, BET_HOST, BET_UNDER, BET_OVER
+import logging
+
 from src.crawler.row_parser import RowParser
+from src.db.collection.betting import Betting, BET_GUEST, BET_HOST, BET_UNDER, BET_OVER
+from src.db.collection.gambling import GAMBLING_TYPE_ORIGINAL, GAMBLING_TYPE_SPREAD_POINT, GAMBLING_TYPE_TOTAL_SCORE
+from src.db.collection.gambling import Gambling
 
 
-def parse_betting(gambling_id, guest_row, host_row) -> List[Betting]:
-    ori = Betting(gambling_id)
-    sp = Betting(gambling_id)
-    tp = Betting(gambling_id)
+def parse_betting(gambling_id, gambling: Gambling, guest_row, host_row) -> Betting:
+    gambling_type = gambling.get_data()["type"]
+    betting = Betting(gambling_id)
+    if gambling_type == GAMBLING_TYPE_ORIGINAL:
+        betting.set_bet(BET_GUEST, RowParser.original_prediction(guest_row)["population"])
+        betting.set_bet(BET_HOST, RowParser.original_prediction(host_row)["population"])
+        return betting
 
-    ori.set_bet(BET_GUEST, RowParser.original_prediction(guest_row)["population"])
-    ori.set_bet(BET_HOST, RowParser.original_prediction(host_row)["population"])
+    if gambling_type == GAMBLING_TYPE_SPREAD_POINT:
+        betting.set_bet(BET_GUEST, RowParser.spread_point_prediction(guest_row)["population"])
+        betting.set_bet(BET_HOST, RowParser.spread_point_prediction(host_row)["population"])
+        return betting
 
-    sp.set_bet(BET_GUEST, RowParser.spread_point_prediction(guest_row)["population"])
-    sp.set_bet(BET_HOST, RowParser.spread_point_prediction(host_row)["population"])
+    if gambling_type == GAMBLING_TYPE_TOTAL_SCORE:
+        betting.set_bet(BET_UNDER, RowParser.total_point_prediction(host_row)["population"])
+        betting.set_bet(BET_OVER, RowParser.total_point_prediction(guest_row)["population"])
+        return betting
 
-    tp.set_bet(BET_UNDER, RowParser.total_point_prediction(host_row)["population"])
-    tp.set_bet(BET_OVER, RowParser.total_point_prediction(guest_row)["population"])
-
-    return [ori, sp, tp]
+    logging.warning(f"invalid gambling type: {gambling_type}")
+    raise Exception(f"invalid gambling type: {gambling_type}")
