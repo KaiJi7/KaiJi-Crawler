@@ -8,6 +8,7 @@ from src.util.singleton import Singleton
 config_path = "configs/config.yaml"
 
 
+# deprecated
 class Util(metaclass=Singleton):
     def __init__(self):
         with open(config_path) as config:

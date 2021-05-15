@@ -1,9 +1,9 @@
 import logging
 
-from src.crawler.row_parser import RowParser
 from src.db.collection.betting import Betting, BET_GUEST, BET_HOST, BET_UNDER, BET_OVER
 from src.db.collection.gambling import GAMBLING_TYPE_ORIGINAL, GAMBLING_TYPE_SPREAD_POINT, GAMBLING_TYPE_TOTAL_SCORE
 from src.db.collection.gambling import Gambling
+from src.parser.row_parser import RowParser
 
 
 def parse_betting(gambling_id, gambling: Gambling, guest_row, host_row) -> Betting:

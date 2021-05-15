@@ -1,5 +1,8 @@
-from datetime import datetime
+import copy
 import logging
+from datetime import datetime
+
+from bson.objectid import ObjectId
 
 default_datetime = datetime(2000, 1, 1)
 
@@ -12,7 +15,7 @@ BET_OVER = "over"
 BET_UNDER = "under"
 
 template = {
-    "gambling_id": None,  # mongodb object id
+    "gambling_id": ObjectId(),  # mongodb object id
     "data_source": "",
     "bet": [
         # {
@@ -24,9 +27,9 @@ template = {
 
 
 class Betting:
-    _data = template
 
-    def __init__(self, gambling_id):
+    def __init__(self, gambling_id: ObjectId):
+        self._data = copy.deepcopy(template)
         self._data["gambling_id"] = gambling_id
 
     def set_bet(self, side: str, quantity: int) -> bool:

@@ -1,14 +1,9 @@
 import logging
-import sys
 
 import requests
 from bs4 import BeautifulSoup
 
-from mongoengine.errors import NotUniqueError
-
 from src.crawler.common import game_type_map
-from src.crawler.document_builder import DocumentBuilder
-from src.crawler.row_parser import RowParser
 from src.util.util import Util
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -24,6 +19,8 @@ class Crawler:
 
     def run(self, date):
         logging.debug(f"start crawling: {date}")
+
+        # get page content
         try:
             content = self.get_content(self.get_url(date))
             soup = BeautifulSoup(content.text, "html.parser")
@@ -38,7 +35,7 @@ class Crawler:
         ):
             try:
 
-                game = parse_game(date, guest_row, host_row)
+                game = parse_game(self.game_type, date, guest_row, host_row)
                 res = db.insert_game(game)
 
                 gambling = parse_gambling(res.inserted_id, guest_row, host_row)
@@ -51,56 +48,6 @@ class Crawler:
 
         logging.debug(f"crawl job done: {date}")
         return
-
-    def judge_total_point(self, scores, threshold):
-        if not threshold:
-            return None
-        total_point = scores["guest"] + scores["host"]
-        return (
-            "under"
-            if total_point < threshold
-            else "over"
-            if total_point > threshold
-            else None
-        )
-
-    def judge_spread_point(self, scores, guest_sp, host_sp):
-        try:
-            return (
-                "guest"
-                if scores["host"] + host_sp < scores["guest"]
-                else "host"
-                if scores["guest"] + guest_sp < scores["host"]
-                else None
-            )
-        except Exception as e:
-            logging.error(e)
-            return None
-
-    def judge_original(self, scores):
-        return (
-            "guest"
-            if scores["host"] < scores["guest"]
-            else "host"
-            if scores["guest"] < scores["host"]
-            else None
-        )
-
-    def total_point_major_pred(self, result, under, over):
-        if (result == "under" and over["population"] < under["population"]) or (
-                result == "over" and under["population"] < over["population"]
-        ):
-            return True
-        else:
-            return False
-
-    def point_major_predict(self, result, guest, host):
-        if (result == "guest" and host["population"] < guest["population"]) or (
-                result == "host" and guest["population"] < host["population"]
-        ):
-            return True
-        else:
-            return False
 
     def get_url(self, date, group_type=0):
         return Util.get_config()["crawler"]["urlPattern"].format(

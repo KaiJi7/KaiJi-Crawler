@@ -1,8 +1,9 @@
+import copy
 from datetime import datetime
 
 default_datetime = datetime(2000, 1, 1)
 template = {
-    # "game_id": None,
+    "type": None,
     "guest": {
         "name": "",
         "score": -1,
@@ -18,7 +19,12 @@ template = {
 
 
 class Game:
-    _data = template
+    def __init__(self):
+        self._data = copy.deepcopy(template)
+
+    def set_type(self, game_type: str) -> bool:
+        self._data["type"] = game_type
+        return True
 
     def set_guest_name(self, name: str) -> bool:
         self._data["guest"]["name"] = name
@@ -50,3 +56,7 @@ class Game:
 
     def get_data(self) -> dict:
         return self._data
+
+    def from_dict(self, data: dict):
+        self.__dict__["_data"].update(data)
+        return self

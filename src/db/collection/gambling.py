@@ -1,5 +1,6 @@
-from datetime import datetime
+import copy
 import logging
+from datetime import datetime
 
 default_datetime = datetime(2000, 1, 1)
 
@@ -27,10 +28,10 @@ template = {
 
 
 class Gambling:
-    _data = template
 
     def __init__(self, game_id=None):
-        self._data["gam_id"] = game_id
+        self._data = copy.deepcopy(template)
+        self._data["game_id"] = game_id
 
     def set_type(self, gambling_type: str) -> bool:
         # TODO: check type availability first
@@ -64,4 +65,5 @@ class Gambling:
         return self._data
 
     def from_dict(self, data: dict):
-        self.__dict__["_data"].update(data)
+        pass
+        # self.__dict__["_data"].update(data)

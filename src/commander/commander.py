@@ -6,13 +6,13 @@ import numpy as np
 import pandas as pd
 
 from src.crawler.crawler import Crawler
-from src.db.client import Client
-from src.util.util import Util
+from src.db.client import Client, NewClient
+from src.config.config import get_config
 
 
 class Commander:
     def __init__(self):
-        self.config = Util.get_config()
+        self.config = get_config()
 
     def start(self):
         for game_type, crawl_range in self.crawl_range().items():
@@ -31,14 +31,16 @@ class Commander:
     def format_date(self, date: datetime) -> str:
         return datetime.strftime(date, self.config["dateFormat"])
 
-    def crawl_range(self):
+    def crawl_range(self) -> dict:
         # TODO: skip empty range
         crawl_range = {}
         end_day = datetime.today()
         for game_type in self.config["commander"]["gameTypes"]:
-            latest_record = Client.latest_record(game_type)
+            # latest_record = Client.latest_record(game_type)
+            latest_record = NewClient().latest_record(game_type)
             if latest_record:
-                begin_day = latest_record.game_time + timedelta(days=1)
+                # begin_day = latest_record.game_time + timedelta(days=1)
+                begin_day = latest_record.get_data()["start_time"] + timedelta(days=1)
             else:
                 available_interval = self.config["commander"]["availableInterval"]
                 begin_day = datetime.today() - timedelta(days=available_interval)
