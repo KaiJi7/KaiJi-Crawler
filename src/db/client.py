@@ -6,12 +6,12 @@ from src.db.collection.betting import Betting
 from src.db.collection.gambling import Gambling
 from src.db.collection.game import Game
 from src.util.singleton import Singleton
-from src.util.util import Util
+from src.config.config import get_config
 
 
 class Client(metaclass=Singleton):
     def __init__(self):
-        config = Util.get_config()
+        config = get_config()
         self._client = pymongo.MongoClient(
             host=config["mongo"]["host"],
             port=config["mongo"]["port"],

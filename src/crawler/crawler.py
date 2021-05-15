@@ -10,7 +10,7 @@ from src.db.client import Client
 from src.parser.betting import parse_betting
 from src.parser.gambling import parse_gambling
 from src.parser.game import parse_game
-from src.util.util import Util
+from src.config.config import get_config
 
 
 class Crawler:
@@ -50,7 +50,7 @@ class Crawler:
         return
 
     def get_url(self, date, group_type=0):
-        return Util.get_config()["crawler"]["urlPattern"].format(
+        return get_config()["crawler"]["urlPattern"].format(
             game_type=game_type_map[self.game_type],
             game_date=date,
             group_type=group_type,

@@ -5,7 +5,7 @@ from datetime import datetime
 import pytz
 
 from src.crawler.common import team_name_mapping
-from src.util.util import Util
+from src.config.config import get_config
 
 
 class RowParser:
@@ -16,7 +16,7 @@ class RowParser:
     @classmethod
     def game_time(cls, date, row_content):
         game_time = row_content.find("td", "td-gameinfo").find("h4").text
-        tz = pytz.timezone(Util.get_config()["timezone"])
+        tz = pytz.timezone(get_config()["timezone"])
         game_datetime = datetime.strptime(f"{date} {game_time}", "%Y%m%d %p %I:%M")
         return tz.localize(game_datetime)
 
