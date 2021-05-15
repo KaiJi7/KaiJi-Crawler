@@ -2,15 +2,15 @@ import logging
 
 import requests
 from bs4 import BeautifulSoup
-
-from src.crawler.common import game_type_map
-from src.util.util import Util
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from src.parser.game import parse_game
-from src.parser.gambling import parse_gambling
+
+from src.crawler.common import game_type_map
+from src.db.client import Client
 from src.parser.betting import parse_betting
-from src.db.client import NewClient
+from src.parser.gambling import parse_gambling
+from src.parser.game import parse_game
+from src.util.util import Util
 
 
 class Crawler:
@@ -24,7 +24,7 @@ class Crawler:
         try:
             content = self.get_content(self.get_url(date))
             soup = BeautifulSoup(content.text, "html.parser")
-            db = NewClient()
+            db = Client()
         except Exception as e:
             logging.error(f"fail to get and parse content: {e}")
             return

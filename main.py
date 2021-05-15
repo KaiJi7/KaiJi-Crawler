@@ -3,7 +3,7 @@ import logging
 from src.commander.commander import Commander
 from src.db.client import Client
 from src.util.util import Util
-from src.db.client import NewClient
+from src.db.client import Client
 
 
 def init():
@@ -31,9 +31,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # from src.db.collection.game import Game
-    # from bson.objectid import ObjectId
-    # p = NewClient()
-    # p.get_gambling(ObjectId("6096d54fd1587c02df17c093"))
-    # p.insert_game(Game())
-    # main()

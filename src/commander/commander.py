@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 from src.crawler.crawler import Crawler
-from src.db.client import Client, NewClient
+from src.db.client import Client, Client
 from src.config.config import get_config
 
 
@@ -37,7 +37,7 @@ class Commander:
         end_day = datetime.today()
         for game_type in self.config["commander"]["gameTypes"]:
             # latest_record = Client.latest_record(game_type)
-            latest_record = NewClient().latest_record(game_type)
+            latest_record = Client().latest_record(game_type)
             if latest_record:
                 # begin_day = latest_record.game_time + timedelta(days=1)
                 begin_day = latest_record.get_data()["start_time"] + timedelta(days=1)

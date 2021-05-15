@@ -1,49 +1,15 @@
-import logging
-import sys
-
-from mongoengine import connect
 import pymongo
+from bson.objectid import ObjectId
 from pymongo import results
-from mongoengine.errors import DoesNotExist
 
-from src.db.collection.sports_data import SportsData
+from src.db.collection.betting import Betting
+from src.db.collection.gambling import Gambling
 from src.db.collection.game import Game
 from src.util.singleton import Singleton
 from src.util.util import Util
-from src.db.collection.gambling import Gambling
-from src.db.collection.betting import Betting
-from bson.objectid import ObjectId
 
 
 class Client(metaclass=Singleton):
-    def __init__(self):
-        config = Util.get_config()
-        connect(
-            db=config["mongo"]["db"],
-            host=config["mongo"]["host"],
-            port=config["mongo"]["port"],
-            username=config["mongo"]["username"],
-            password=config["mongo"]["password"],
-            authentication_source="admin",
-        )
-
-        logging.debug("db initialized")
-
-    @classmethod
-    def latest_record(cls, game_type):
-        logging.debug(f"getting latest record: {game_type}")
-        try:
-            res = SportsData.objects(game_type=game_type).order_by("-game_time")
-            return res[0] if res else None
-        except DoesNotExist as e:
-            logging.warning(e)
-            raise e
-        except Exception as e:
-            logging.error(f"unknown error: {e}")
-            sys.exit(-1)
-
-
-class NewClient(metaclass=Singleton):
     def __init__(self):
         config = Util.get_config()
         self._client = pymongo.MongoClient(
@@ -81,8 +47,3 @@ class NewClient(metaclass=Singleton):
     def get_gambling(self, gambling_id: ObjectId) -> Gambling:
         data = self._col_gambling.find_one(gambling_id)
         return Gambling().from_dict(data)
-
-
-if __name__ == '__main__':
-    p = NewClient()
-    p.insert_game(Game())
