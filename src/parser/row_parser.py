@@ -4,8 +4,8 @@ from datetime import datetime
 
 import pytz
 
-from crawler.common import team_name_mapping
-from util.util import Util
+from src.crawler.common import team_name_mapping
+from src.util.util import Util
 
 
 class RowParser:
@@ -82,7 +82,7 @@ class RowParser:
             return None
 
     @classmethod
-    def total_point_prediction(cls, row_content):
+    def total_point_prediction(cls, row_content) -> dict:
         date = (
             row_content.find("td", {"class": "td-bank-bet02"})
             .find_next("td")
@@ -124,7 +124,7 @@ class RowParser:
             return None
 
     @classmethod
-    def spread_point_prediction(cls, row_content):
+    def spread_point_prediction(cls, row_content) -> dict:
         date = (
             row_content.find("td", {"class": "td-bank-bet01"})
             .find_next("td")
@@ -150,7 +150,7 @@ class RowParser:
         return float(data[0])
 
     @classmethod
-    def original_prediction(cls, row_content):
+    def original_prediction(cls, row_content) -> dict:
         date = (
             row_content.find("td", {"class": "td-bank-bet03"})
             .find_next("td")

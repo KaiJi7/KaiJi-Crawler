@@ -1,8 +1,8 @@
 import logging
 
-from commander.commander import Commander
-from db.client import Client
-from util.util import Util
+from src.commander.commander import Commander
+from src.db.client import Client
+from src.util.util import Util
 
 
 def init():

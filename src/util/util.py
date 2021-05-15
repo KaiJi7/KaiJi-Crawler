@@ -3,12 +3,15 @@ import os
 
 import yaml
 
-from util.singleton import Singleton
+from src.util.singleton import Singleton
+
+config_path = "configs/config.yaml"
 
 
+# deprecated
 class Util(metaclass=Singleton):
     def __init__(self):
-        with open("configs/config.yaml") as config:
+        with open(config_path) as config:
             self.config = yaml.load(config, Loader=yaml.FullLoader)
 
     def load_environment_variable(self):
@@ -17,16 +20,16 @@ class Util(metaclass=Singleton):
             config = yaml.load(config, Loader=yaml.FullLoader)
 
             config["mongo"]["host"] = (
-                os.environ.get("DB_HOST") or config["mongoDb"]["host"]
+                    os.environ.get("DB_HOST") or config["mongoDb"]["host"]
             )
             config["mongo"]["port"] = (
-                os.environ.get("DB_PORT") or config["mongoDb"]["host"]
+                    os.environ.get("DB_PORT") or config["mongoDb"]["host"]
             )
             config["mongo"]["user"] = (
-                os.environ.get("DB_USER") or config["mongoDb"]["user"]
+                    os.environ.get("DB_USER") or config["mongoDb"]["user"]
             )
             config["mongo"]["password"] = (
-                os.environ.get("DB_PASSWORD") or config["mongoDb"]["password"]
+                    os.environ.get("DB_PASSWORD") or config["mongoDb"]["password"]
             )
 
         # overwrite configs by environment variable
