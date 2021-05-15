@@ -26,7 +26,7 @@ class Client(metaclass=Singleton):
 
     def latest_record(self, game_type: str) -> Game:
         f = {
-            "game_type": game_type
+            "type": game_type
         }
 
         res = list(self._col_game.find(f).sort("start_time", -1).limit(1))

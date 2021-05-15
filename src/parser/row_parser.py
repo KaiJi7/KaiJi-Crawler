@@ -120,7 +120,7 @@ class RowParser:
             )
             return float(spr)
         except Exception as e:
-            logging.error(e)
+            logging.warning(f"no spread point info: {e}")
             return None
 
     @classmethod
