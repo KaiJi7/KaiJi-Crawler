@@ -1,8 +1,8 @@
 import logging
 
-from commander.commander import Commander
-from db.client import Client
-from util.util import Util
+from src.commander.commander import Commander
+from src.db.client import Client
+from src.config.config import get_config
 
 
 def init():
@@ -14,7 +14,7 @@ def init():
         "ERROR": logging.ERROR,
     }
     logging.basicConfig(
-        level=log_level[Util.get_config()["logging"]["level"]],
+        level=log_level[get_config()["logging"]["level"]],
         format="%(asctime)s %(filename)s %(lineno)d %(name)s: %(levelname)s %(message)s",
     )
     logging.debug("logger initialized")

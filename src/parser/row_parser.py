@@ -4,8 +4,8 @@ from datetime import datetime
 
 import pytz
 
-from crawler.common import team_name_mapping
-from util.util import Util
+from src.crawler.common import team_name_mapping
+from src.config.config import get_config
 
 
 class RowParser:
@@ -16,7 +16,7 @@ class RowParser:
     @classmethod
     def game_time(cls, date, row_content):
         game_time = row_content.find("td", "td-gameinfo").find("h4").text
-        tz = pytz.timezone(Util.get_config()["timezone"])
+        tz = pytz.timezone(get_config()["timezone"])
         game_datetime = datetime.strptime(f"{date} {game_time}", "%Y%m%d %p %I:%M")
         return tz.localize(game_datetime)
 
@@ -82,7 +82,7 @@ class RowParser:
             return None
 
     @classmethod
-    def total_point_prediction(cls, row_content):
+    def total_point_prediction(cls, row_content) -> dict:
         date = (
             row_content.find("td", {"class": "td-bank-bet02"})
             .find_next("td")
@@ -120,11 +120,11 @@ class RowParser:
             )
             return float(spr)
         except Exception as e:
-            logging.error(e)
+            logging.warning(f"no spread point info: {e}")
             return None
 
     @classmethod
-    def spread_point_prediction(cls, row_content):
+    def spread_point_prediction(cls, row_content) -> dict:
         date = (
             row_content.find("td", {"class": "td-bank-bet01"})
             .find_next("td")
@@ -150,7 +150,7 @@ class RowParser:
         return float(data[0])
 
     @classmethod
-    def original_prediction(cls, row_content):
+    def original_prediction(cls, row_content) -> dict:
         date = (
             row_content.find("td", {"class": "td-bank-bet03"})
             .find_next("td")
