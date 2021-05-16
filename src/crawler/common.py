@@ -31,4 +31,37 @@ team_name_mapping = {
     "明尼蘇達灰狼": "MIN",
 }
 
+host_timezone = {
+    "MIL": 'America/Chicago',
+    "ATL": 'America/New_York',
+    "DAL": 'America/Chicago',
+    "LAL": 'America/Los_Angeles',
+    "NO": 'America/Barbados',
+    "SAC": 'America/Los_Angeles',
+    "SA": 'America/Santiago',
+    "WAS": 'America/New_York',
+    "DEN": 'America/Denver',
+    "CHA": 'America/New_York',
+    "GS": 'America/Los_Angeles',
+    "MEM": 'America/Kentucky/Louisville',
+    "LAC": 'America/Los_Angeles',
+    "OKC": 'America/Chicago',
+    "DET": 'America/Detroit',
+    "NY": 'America/New_York',
+    "CLE": 'America/New_York',
+    "IND": 'America/New_York',
+    "TOR": 'America/Toronto',
+    "HOU": 'America/Chicago',
+    "BOS": 'America/New_York',
+    "PHI": 'America/New_York',
+    "ORL": 'America/Chicago',
+    "PHX": 'America/Phoenix',
+    "UTA": 'America/Denver',
+    "BKN": 'America/New_York',
+    "POR": 'America/Los_Angeles',
+    "MIA": 'America/New_York',
+    "CHI": 'America/Chicago',
+    "MIN": 'America/Chicago',
+}
+
 game_type_map = {"MLB": 1, "NPB": 2, "NBA": 3, "FOOTBALL": 4, "CPBL": 6, "WNBA": 7}
