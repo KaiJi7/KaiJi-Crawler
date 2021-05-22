@@ -1,7 +1,6 @@
 import copy
 from datetime import datetime
 
-default_datetime = datetime(2000, 1, 1)
 template = {
     "type": None,
     "guest": {
@@ -12,9 +11,9 @@ template = {
         "name": "",
         "score": -1,
     },
-    "start_time": default_datetime,
-    "start_time_local": default_datetime,
-    "location": ""
+    # "start_time": None,
+    # "start_time_local": None,
+    # "location": None
 }
 
 

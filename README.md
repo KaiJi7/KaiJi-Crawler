@@ -34,7 +34,9 @@ $ docker pull allensyk/sports_data_crawler
 
 ## Crawled Data
 
-Each crawled competition data would be save as a JSON document into mongoDB.
+Each crawled competition data would be save as JSON document into mongoDB.
+
+### 
 
 ## Setup Develop Environment
 

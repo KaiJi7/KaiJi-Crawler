@@ -1,5 +1,8 @@
 from src.db.collection.game import Game
 from src.parser.row_parser import RowParser
+from src.crawler.common import host_timezone
+import pytz
+import logging
 
 
 def parse_game(game_type: str, date, guest_row, host_row) -> Game:
@@ -15,7 +18,10 @@ def parse_game(game_type: str, date, guest_row, host_row) -> Game:
     g.set_host_score(scores["host"])
     g.set_start_time(game_time)
 
-    # TODO: local start time map
-    # TODO: location map based on host
+    try:
+        tz = pytz.timezone(host_timezone.get(team_name["host"], ""))
+        g.set_start_time_local(tz.localize(game_time))
+    except Exception as e:
+        logging.warning(f"unknown to get timezone info of team: {team_name['host']}. {e}")
 
     return g

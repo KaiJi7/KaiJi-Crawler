@@ -14,7 +14,7 @@ class RowParser:
         return row_content.find("td", "td-gameinfo").find("h3").text
 
     @classmethod
-    def game_time(cls, date, row_content):
+    def game_time(cls, date, row_content) -> datetime:
         game_time = row_content.find("td", "td-gameinfo").find("h4").text
         tz = pytz.timezone(get_config()["timezone"])
         game_datetime = datetime.strptime(f"{date} {game_time}", "%Y%m%d %p %I:%M")
@@ -24,15 +24,15 @@ class RowParser:
     def team_name(cls, row_content):
         guest = (
             row_content.find("td", {"class": "td-teaminfo"})
-            .find_all("tr")[0]
-            .find("a")
-            .text.strip()
+                .find_all("tr")[0]
+                .find("a")
+                .text.strip()
         )
         host = (
             row_content.find("td", {"class": "td-teaminfo"})
-            .find_all("tr")[-1]
-            .find("a")
-            .text.strip()
+                .find_all("tr")[-1]
+                .find("a")
+                .text.strip()
         )
         guest_abbreviate = team_name_mapping.get(guest, guest)
         host_abbreviate = team_name_mapping.get(host, host)
@@ -43,13 +43,13 @@ class RowParser:
     def scores(cls, row_content):
         guest = int(
             row_content.find("td", {"class": "td-teaminfo"})
-            .find_all("li")[0]
-            .text.strip()
+                .find_all("li")[0]
+                .text.strip()
         )
         host = int(
             row_content.find("td", {"class": "td-teaminfo"})
-            .find_all("li")[-1]
-            .text.strip()
+                .find_all("li")[-1]
+                .text.strip()
         )
         return {"guest": guest, "host": host}
 
@@ -58,9 +58,9 @@ class RowParser:
         try:
             threshold = (
                 row_content.find("td", {"class": "td-bank-bet02"})
-                .find("span", {"class": "data-wrap"})
-                .find("strong")
-                .text
+                    .find("span", {"class": "data-wrap"})
+                    .find("strong")
+                    .text
             )
             return float(threshold)
         except Exception as e:
@@ -72,9 +72,9 @@ class RowParser:
         try:
             response = (
                 row_content.find("td", {"class": "td-bank-bet02"})
-                .find("span", {"class": "data-wrap"})
-                .find("span")
-                .text[2:]
+                    .find("span", {"class": "data-wrap"})
+                    .find("span")
+                    .text[2:]
             )
             return float(response)
         except Exception as e:
@@ -85,8 +85,8 @@ class RowParser:
     def total_point_prediction(cls, row_content) -> dict:
         date = (
             row_content.find("td", {"class": "td-bank-bet02"})
-            .find_next("td")
-            .text.strip()
+                .find_next("td")
+                .text.strip()
         )
         date = re.findall(r"\d+", date)
         percentage, population = date if len(date) == 2 else (0, 0)
@@ -100,9 +100,9 @@ class RowParser:
         try:
             sp = (
                 row_content.find("td", {"class": "td-bank-bet01"})
-                .find("span", {"class": "data-wrap"})
-                .find("strong")
-                .text
+                    .find("span", {"class": "data-wrap"})
+                    .find("strong")
+                    .text
             )
             return float(sp)
         except Exception as e:
@@ -114,9 +114,9 @@ class RowParser:
         try:
             spr = (
                 row_content.find("td", {"class": "td-bank-bet01"})
-                .find("span", {"class": "data-wrap"})
-                .find("span")
-                .text[2:]
+                    .find("span", {"class": "data-wrap"})
+                    .find("span")
+                    .text[2:]
             )
             return float(spr)
         except Exception as e:
@@ -127,8 +127,8 @@ class RowParser:
     def spread_point_prediction(cls, row_content) -> dict:
         date = (
             row_content.find("td", {"class": "td-bank-bet01"})
-            .find_next("td")
-            .text.strip()
+                .find_next("td")
+                .text.strip()
         )
         date = re.findall(r"\d+", date)
         percentage, population = date if len(date) == 2 else (0, 0)
@@ -153,8 +153,8 @@ class RowParser:
     def original_prediction(cls, row_content) -> dict:
         date = (
             row_content.find("td", {"class": "td-bank-bet03"})
-            .find_next("td")
-            .text.strip()
+                .find_next("td")
+                .text.strip()
         )
         date = re.findall(r"\d+", date)
         percentage, population = date if len(date) == 2 else (0, 0)
