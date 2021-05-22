@@ -17,11 +17,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - id: release
-          uses: rymndhng/release-on-push-action@master
-          with:
-            bump_version_scheme: minor
-
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
