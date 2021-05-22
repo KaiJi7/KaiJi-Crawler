@@ -11,9 +11,9 @@ template = {
         "name": "",
         "score": -1,
     },
-    "start_time": None,
-    "start_time_local": None,
-    "location": None
+    # "start_time": None,
+    # "start_time_local": None,
+    # "location": None
 }
 
 
