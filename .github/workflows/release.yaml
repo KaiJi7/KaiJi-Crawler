@@ -25,6 +25,4 @@ jobs:
           push: true
           tags: allensyk/kaiji-crawler:${{ github.ref }}
       - name: Image digest
-        run: |
-          echo ${{ steps.docker_build.outputs.digest }}
-          echo "release docker image allensyk/kaiji-crawler:${{ github.ref }}
+        run: echo ${{ steps.docker_build.outputs.digest }}
