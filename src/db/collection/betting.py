@@ -6,8 +6,7 @@ from bson.objectid import ObjectId
 
 default_datetime = datetime(2000, 1, 1)
 
-# TODO: better naming
-DATA_SOURCE_WEB = "web"
+DATA_SOURCE_WILD_MEMBER = "wild_member"
 
 BET_GUEST = "guest"
 BET_HOST = "host"
@@ -16,7 +15,7 @@ BET_UNDER = "under"
 
 template = {
     "gambling_id": ObjectId(),  # mongodb object id
-    "data_source": "",
+    "source": "",
     "bet": [
         # {
         #     "side": None,
@@ -44,6 +43,10 @@ class Betting:
             "side": side,
             "quantity": quantity
         })
+        return True
+
+    def set_source(self, source: str) -> bool:
+        self._data["source"] = source
         return True
 
     def get_data(self) -> dict:
