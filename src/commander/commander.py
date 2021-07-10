@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 from src.crawler.crawler import Crawler
-from src.db.client import Client, Client
+from src.db.client import Client
 from src.config.config import get_config
 
 
