@@ -143,7 +143,7 @@ class RowParser:
             "td", {"class": "td-bank-bet03"}
         ).text.strip()
 
-        data = re.findall(r"\d+\.\d+", local_origin_guest_response_ratio)
+        data = re.findall(r"\d+\.?\d*", local_origin_guest_response_ratio)
         if len(data) != 1:
             logging.warning(f"unexpected data length: {data}")
             return None
