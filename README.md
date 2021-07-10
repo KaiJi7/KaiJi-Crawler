@@ -25,17 +25,6 @@ $ docker-compose build
 $ docker pull allensyk/sports_data_crawler
 ```
 
-| Environment Variable | Description |
-| :--- | :--- |
-| DB_HOST | DB host address. |
-| DB_PORT | DB port. |
-| DB_USERNAME | DB username. |
-| DB_PASSWORD | DB user password. |
-
-## Crawled Data
-
-Each crawled competition data would be save as JSON document into mongoDB.
-
 ### 
 
 ## Setup Develop Environment
