@@ -3,6 +3,6 @@ pytz==2021.1
 requests==2.22.0
 pymongo==3.11.4
 urllib3==1.25.11
-numpy==1.20.2
+numpy==1.22.0
 beautifulsoup4==4.11.1
 PyYAML==6.0
