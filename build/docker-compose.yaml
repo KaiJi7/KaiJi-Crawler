@@ -2,9 +2,9 @@ version: '3'
 services:
   kaiji-crawler:
     build:
-      context: ./
+      context: ../..
       dockerfile: ./build/Dockerfile
-    image: allensyk/kaiji-crawler:1.1.4
+    image: allensyk/kaiji-crawler:latest
     container_name: crawler
     environment:
       DB_HOST: 192.168.2.3
